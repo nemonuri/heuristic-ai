@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nemonuri.Monoids.Common\Nemonuri.Monoids.Common.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Pack">
+    <Version>0.0.1</Version>
+    <!-- <RepositoryUrl></RepositoryUrl> -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.3.2" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
+
+</Project>
