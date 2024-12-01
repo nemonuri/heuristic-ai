@@ -9,13 +9,13 @@ public ref struct MinorizedOrdinalSpanBuilder
 
     public StrictSupremumSpan StrictSupremumSpan {get;set;}
 
-    private readonly int OrdinalSpanLength => StrictSupremumSpan.InnerSpan.Length;
+    private readonly int OrdinalSpanLength => StrictSupremumSpan.InnerReadOnlySpan.Length;
 
     public MinorizedOrdinalSpan Build(Span<nint> ordinalSpan)
     {
         //TODO: Validate
 
-        return new MinorizedOrdinalSpan(ordinalSpan, StrictSupremumSpan.InnerSpan);
+        return new MinorizedOrdinalSpan(ordinalSpan, StrictSupremumSpan);
     }
 
     public MinorizedOrdinalSpan BuildAndClear(Span<nint> ordinalSpan)

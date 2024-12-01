@@ -2,12 +2,12 @@ namespace Nemonuri.Ordinals;
 
 public readonly ref struct StrictSupremumSpan
 {
-    private readonly ReadOnlySpan<nint> _innerSpan;
+    private readonly ReadOnlySpan<nint> _innerReadOnlySpan;
 
-    public StrictSupremumSpan(ReadOnlySpan<nint> innerSpan)
+    public StrictSupremumSpan(ReadOnlySpan<nint> innerReadOnlySpan)
     {
-        _innerSpan = innerSpan;
+        _innerReadOnlySpan = innerReadOnlySpan;
     }
 
-    public ReadOnlySpan<nint> InnerSpan => _innerSpan;
+    public ReadOnlySpan<nint> InnerReadOnlySpan => _innerReadOnlySpan;
 }
