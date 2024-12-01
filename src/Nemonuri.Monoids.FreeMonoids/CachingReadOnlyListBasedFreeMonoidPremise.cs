@@ -3,13 +3,60 @@ using CommunityToolkit.Diagnostics;
 
 namespace Nemonuri.Monoids.FreeMonoids;
 
-internal class ReadOnlyListBasedFreeMonoidPremise<TGenerator> :
+public class CachingReadOnlyListBasedFreeMonoidPremise<TGenerator> :
     IFreeMonoidPremise<IReadOnlyList<TGenerator>, TGenerator>
 {
     private static readonly TGenerator[] s_identity = [];
-    internal static IReadOnlyList<TGenerator> StaticIdentity => s_identity;
 
-    public ReadOnlyListBasedFreeMonoidPremise() {}
+    private readonly HashSet<IReadOnlyList<TGenerator>> _cache;
+
+    private readonly ReadOnlyListBasedConcatenatedStructuralEqualityComparer<TGenerator> _innerStructuralEqualityComparer;
+
+    public CachingReadOnlyListBasedFreeMonoidPremise
+    (
+        IEqualityComparer<TGenerator>? innerEqualityComparer
+    )
+    {
+        _innerStructuralEqualityComparer = new (innerEqualityComparer);
+        _cache = new (_innerStructuralEqualityComparer);
+    }
+
+    private IReadOnlyList<TGenerator> GetOrCreate(TGenerator item)
+    {
+        var alter = _cache.GetAlternateLookup<TGenerator>();
+
+        if (alter.TryGetValue(item, out var result))
+        {
+            return result;
+        }
+        else
+        {
+            result = ((IAlternateEqualityComparer<TGenerator, IReadOnlyList<TGenerator>>)_innerStructuralEqualityComparer).Create(item);
+            _cache.Add(result);
+            return result;
+        }
+    }
+
+    private IReadOnlyList<TGenerator> GetOrCreate(IReadOnlyList<TGenerator> items1, IReadOnlyList<TGenerator> items2)
+    {
+        var alter = _cache.GetAlternateLookup<(IReadOnlyList<TGenerator>, IReadOnlyList<TGenerator>)>();
+        var pair1 = (items1, items2);
+
+        if (alter.TryGetValue(pair1, out var result))
+        {
+            return result;
+        }
+        else
+        {
+            result = ((IAlternateEqualityComparer<(IReadOnlyList<TGenerator>, IReadOnlyList<TGenerator>), IReadOnlyList<TGenerator>>)_innerStructuralEqualityComparer).Create(pair1);
+            _cache.Add(result);
+            return result;
+        }
+    }
+
+    public IEqualityComparer<IReadOnlyList<TGenerator>> InnerStructuralEqualityComparer => _innerStructuralEqualityComparer;
+
+    public IEqualityComparer<TGenerator>? InnerEqualityComparer => _innerStructuralEqualityComparer.InnerEqualityComparer;
 
     public IReadOnlyList<TGenerator> DecomposeInChain(IReadOnlyList<TGenerator> domain) =>
         TryDecomposeInChain(domain, out var result) ? result : ThrowHelper.ThrowInvalidOperationException<IReadOnlyList<TGenerator>>(/* TODO */);
@@ -34,7 +81,8 @@ internal class ReadOnlyListBasedFreeMonoidPremise<TGenerator> :
 
     public bool TryMapToDomain(TGenerator alternate, [NotNullWhen(true)] out IReadOnlyList<TGenerator>? outDomain)
     {
-        outDomain = [alternate];
+        //TODO: Validate
+        outDomain = GetOrCreate(alternate);
         return true;
     }
 
@@ -66,7 +114,8 @@ internal class ReadOnlyListBasedFreeMonoidPremise<TGenerator> :
 
     public bool TryOperate(IReadOnlyList<TGenerator> left, IReadOnlyList<TGenerator> right, [NotNullWhen(true)] out IReadOnlyList<TGenerator>? result)
     {
-        result = [..left, ..right];
+        //TODO: Validate
+        result = GetOrCreate(left, right);
         return true;
     }
 }
