@@ -1,3 +1,5 @@
+#if false
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace Nemonuri.Monoids;
@@ -52,3 +54,5 @@ public static class MonoidTheory
         }
     }
 }
+
+#endif
