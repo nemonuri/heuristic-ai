@@ -18,5 +18,9 @@ public readonly ref partial struct ExclusiveMaximumOrdinalReadOnlySpan
 
     public ReadOnlySpan<ExclusiveMaximumOrdinal> InnerReadOnlySpan => _innerReadOnlySpan;
 
-    public ReadOnlySpan<nint> GetNIntReadOnlySpan() => MemoryMarshal.Cast<ExclusiveMaximumOrdinal, nint>(_innerReadOnlySpan);
+    public ReadOnlySpan<nint> ToNIntReadOnlySpan() => MemoryMarshal.Cast<ExclusiveMaximumOrdinal, nint>(_innerReadOnlySpan);
+
+    public ref readonly ExclusiveMaximumOrdinal this[int index] => ref _innerReadOnlySpan[index];
+
+    public int Length => _innerReadOnlySpan.Length;
 }
