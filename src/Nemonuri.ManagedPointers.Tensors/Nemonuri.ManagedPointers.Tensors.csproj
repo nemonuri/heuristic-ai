@@ -10,6 +10,7 @@
     <Import Project="$(NugetConfigDirectory)System.Numerics.Tensors.props" />
 
     <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Collections.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Ordinals.Tensors.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->

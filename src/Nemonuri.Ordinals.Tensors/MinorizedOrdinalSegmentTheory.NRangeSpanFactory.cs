@@ -1,6 +1,8 @@
+using Nemonuri.Ordinals.Tensors.Extensions;
+
 namespace Nemonuri.Ordinals.Tensors;
 
-public static partial class MinorizedOrdinalSegmentExtensions
+public static partial class MinorizedOrdinalSegmentTheory
 {
     public readonly ref struct NRangeSpanFactory
     {
