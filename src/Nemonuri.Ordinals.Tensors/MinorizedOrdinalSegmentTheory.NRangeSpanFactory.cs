@@ -1,5 +1,3 @@
-using Nemonuri.Ordinals.Tensors.Extensions;
-
 namespace Nemonuri.Ordinals.Tensors;
 
 public static partial class MinorizedOrdinalSegmentTheory
