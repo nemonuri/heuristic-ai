@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Ordinals.Tensors",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Ordinals.Common", "Nemonuri.Ordinals.Common\Nemonuri.Ordinals.Common.csproj", "{0483C75C-736E-4960-8D18-5C972A990D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.ManagedPointers.Tensors", "Nemonuri.ManagedPointers.Tensors\Nemonuri.ManagedPointers.Tensors.csproj", "{6FBE7767-70BB-40D3-ABD1-888D3A229943}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{0483C75C-736E-4960-8D18-5C972A990D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0483C75C-736E-4960-8D18-5C972A990D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0483C75C-736E-4960-8D18-5C972A990D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FBE7767-70BB-40D3-ABD1-888D3A229943}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FBE7767-70BB-40D3-ABD1-888D3A229943}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FBE7767-70BB-40D3-ABD1-888D3A229943}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FBE7767-70BB-40D3-ABD1-888D3A229943}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
