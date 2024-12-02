@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>13</LangVersion>
@@ -18,7 +18,7 @@
     <Import Project="$(ConfigDirectory)Pack.Common.props" />
 
     <PropertyGroup>
-      <Version>0.0.1</Version>
+      <Version>0.0.2</Version>
       <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
     </PropertyGroup>
 
