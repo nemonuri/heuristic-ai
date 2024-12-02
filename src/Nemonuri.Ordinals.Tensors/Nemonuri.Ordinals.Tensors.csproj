@@ -7,16 +7,22 @@
     <NoWarn>$(NoWarn);SYSLIB5001</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Numerics.Tensors" Version="9.0.0" />
-  </ItemGroup>
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+    <Import Project="$(NugetConfigDirectory)System.Numerics.Tensors.props" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\Nemonuri.Ordinals.Common\Nemonuri.Ordinals.Common.csproj" />
-  </ItemGroup>
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Ordinals.Common.props" />
+  <!-- /NugetConfig -->
 
-  <!-- ConfigDirectory -->
-    <Import Project="$(ConfigDirectory)CommunityToolkit.Diagnostics.props" />
-  <!-- /ConfigDirectory -->
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
+
+    <PropertyGroup>
+      <Version>0.0.1</Version>
+      <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
 
 </Project>

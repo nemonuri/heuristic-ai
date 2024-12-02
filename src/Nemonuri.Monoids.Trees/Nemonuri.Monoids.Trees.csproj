@@ -6,12 +6,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.3.2" />
-  </ItemGroup>
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Monoids.Common.props" />
+  <!-- /NugetConfig -->
 
-  <ItemGroup>
-    <ProjectReference Include="..\Nemonuri.Monoids.Common\Nemonuri.Monoids.Common.csproj" />
-  </ItemGroup>
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
+
+    <PropertyGroup>
+      <Version>0.0.1</Version>
+      <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
 
 </Project>

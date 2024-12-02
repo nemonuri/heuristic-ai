@@ -9,21 +9,20 @@
     <AssemblyName>Nemonuri.Ordinals.Common</AssemblyName>
   </PropertyGroup>
 
-  <PropertyGroup Label="Pack">
-    <Version>0.0.1</Version>
-    <!-- <RepositoryUrl></RepositoryUrl> -->
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
-  </PropertyGroup>
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Common.props" />
+  <!-- /NugetConfig -->
 
-  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
 
-  <ItemGroup Label="Local Package">
-    <PackageReference Include="Nemonuri.ManagedPointers.Common" Version="*" />
-  </ItemGroup>
+    <PropertyGroup>
+      <Version>0.0.1</Version>
+      <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+    </PropertyGroup>
 
-  <!-- ConfigDirectory -->
-    <Import Project="$(ConfigDirectory)CommunityToolkit.Diagnostics.props" />
-  <!-- /ConfigDirectory -->
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
 
 </Project>

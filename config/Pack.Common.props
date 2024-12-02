@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup Label="Pack">
+    <RepositoryUrl>https://github.com/nemonuri/heuristic-ai</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+</Project>
