@@ -16,7 +16,7 @@
 
     <PropertyGroup>
       <Version>0.0.1</Version>
-      <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+      <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
     </PropertyGroup>
 
     <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  

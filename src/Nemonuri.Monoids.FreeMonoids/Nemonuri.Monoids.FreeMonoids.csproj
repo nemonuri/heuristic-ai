@@ -15,7 +15,7 @@
     <Version>0.0.1</Version>
     <!-- <RepositoryUrl></RepositoryUrl> -->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- <PackageReleaseNotes></PackageReleaseNotes> -->
+    <-- PackageReleaseNotes --><-- /PackageReleaseNotes -->
   </PropertyGroup>
 
   <ItemGroup>
