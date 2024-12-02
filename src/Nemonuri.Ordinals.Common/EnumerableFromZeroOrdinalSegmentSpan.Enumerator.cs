@@ -1,14 +1,14 @@
 namespace Nemonuri.Ordinals;
 
-public readonly ref partial struct EnumerableMinorizedOrdinalSegmentSpan
+public readonly ref partial struct EnumerableFromZeroOrdinalSegmentSpan
 {
     public ref struct Enumerator
     {
-        private readonly EnumerableMinorizedOrdinalSegmentSpan _span;
+        private readonly EnumerableFromZeroOrdinalSegmentSpan _span;
 
         private bool _initialized;
 
-        internal Enumerator(EnumerableMinorizedOrdinalSegmentSpan span)
+        internal Enumerator(EnumerableFromZeroOrdinalSegmentSpan span)
         {
             _initialized = false;
             _span = span;

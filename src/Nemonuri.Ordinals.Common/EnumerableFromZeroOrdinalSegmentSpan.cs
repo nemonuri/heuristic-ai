@@ -1,12 +1,12 @@
 namespace Nemonuri.Ordinals;
 
-public readonly ref partial struct EnumerableMinorizedOrdinalSegmentSpan
+public readonly ref partial struct EnumerableFromZeroOrdinalSegmentSpan
 {
     private readonly ReadOnlySpan<nint> _cardinalitySpan;
 
     private readonly Span<nint> _innerOrdinalSpan;
 
-    public EnumerableMinorizedOrdinalSegmentSpan(ReadOnlySpan<nint> cardinalitySpan, Span<nint> innerOrdinalSpan)
+    public EnumerableFromZeroOrdinalSegmentSpan(ReadOnlySpan<nint> cardinalitySpan, Span<nint> innerOrdinalSpan)
     {
         Guard.IsEqualTo(cardinalitySpan.Length, innerOrdinalSpan.Length);
 

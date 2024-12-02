@@ -4,22 +4,22 @@ public readonly ref partial struct EnumerableOrdinalSegmentSpan
 {
     private readonly ReadOnlySpan<nint> _minimumOrdinalSpan;
 
-    private readonly EnumerableMinorizedOrdinalSegmentSpan _enumerableMinorizedOrdinalSegmentSpan;
+    private readonly EnumerableFromZeroOrdinalSegmentSpan _enumerableFromZeroOrdinalSegmentSpan;
 
     private readonly Span<nint> _innerOrdinalSpan;
 
     public EnumerableOrdinalSegmentSpan
     (
         ReadOnlySpan<nint> minimumOrdinalSpan, 
-        EnumerableMinorizedOrdinalSegmentSpan enumerableMinorizedOrdinalSegmentSpan,
+        EnumerableFromZeroOrdinalSegmentSpan enumerableFromZeroOrdinalSegmentSpan,
         Span<nint> innerOrdinalSpan
     )
     {
-        Guard.IsEqualTo(minimumOrdinalSpan.Length, enumerableMinorizedOrdinalSegmentSpan.Length);
+        Guard.IsEqualTo(minimumOrdinalSpan.Length, enumerableFromZeroOrdinalSegmentSpan.Length);
         Guard.IsEqualTo(minimumOrdinalSpan.Length, innerOrdinalSpan.Length);
 
         _minimumOrdinalSpan = minimumOrdinalSpan;
-        _enumerableMinorizedOrdinalSegmentSpan = enumerableMinorizedOrdinalSegmentSpan;
+        _enumerableFromZeroOrdinalSegmentSpan = enumerableFromZeroOrdinalSegmentSpan;
         _innerOrdinalSpan = innerOrdinalSpan;
     }
 
@@ -27,26 +27,26 @@ public readonly ref partial struct EnumerableOrdinalSegmentSpan
     (
         ReadOnlySpan<nint> minimumOrdinalSpan, 
         ReadOnlySpan<nint> cardinalitySpan, 
-        Span<nint> minorizedInnerOrdinalSpan,
+        Span<nint> fromZeroInnerOrdinalSpan,
         Span<nint> innerOrdinalSpan
     ) 
     : this
     (
         minimumOrdinalSpan,
-        new EnumerableMinorizedOrdinalSegmentSpan(cardinalitySpan, minorizedInnerOrdinalSpan),
+        new EnumerableFromZeroOrdinalSegmentSpan(cardinalitySpan, fromZeroInnerOrdinalSpan),
         innerOrdinalSpan
     )
     {}
 
     public ReadOnlySpan<nint> MinimumOrdinalSpan => _minimumOrdinalSpan;
 
-    public EnumerableMinorizedOrdinalSegmentSpan EnumerableMinorizedOrdinalSegmentSpan => _enumerableMinorizedOrdinalSegmentSpan;
+    public EnumerableFromZeroOrdinalSegmentSpan EnumerableFromZeroOrdinalSegmentSpan => _enumerableFromZeroOrdinalSegmentSpan;
 
-    public ReadOnlySpan<nint> CardinalitySpan => _enumerableMinorizedOrdinalSegmentSpan.CardinalitySpan;
+    public ReadOnlySpan<nint> CardinalitySpan => _enumerableFromZeroOrdinalSegmentSpan.CardinalitySpan;
 
     public void Clear()
     {
-        _enumerableMinorizedOrdinalSegmentSpan.Clear();
+        _enumerableFromZeroOrdinalSegmentSpan.Clear();
         _innerOrdinalSpan.Clear();
     }
 
