@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>13</LangVersion>
+    <RootNamespace>Nemonuri.Ordinals</RootNamespace>
+    <AssemblyName>Nemonuri.Ordinals.Common</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Label="Pack">
@@ -19,5 +21,9 @@
   <ItemGroup Label="Local Package">
     <PackageReference Include="Nemonuri.ManagedPointers.Common" Version="*" />
   </ItemGroup>
+
+  <!-- ConfigDirectory -->
+    <Import Project="$(ConfigDirectory)CommunityToolkit.Diagnostics.props" />
+  <!-- /ConfigDirectory -->
 
 </Project>

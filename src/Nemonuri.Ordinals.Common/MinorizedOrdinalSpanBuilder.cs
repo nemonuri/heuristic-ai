@@ -2,12 +2,12 @@ namespace Nemonuri.Ordinals;
 
 public ref struct MinorizedOrdinalSpanBuilder
 {
-    public MinorizedOrdinalSpanBuilder(StrictSupremumSpan strictSupremumSpan)
+    public MinorizedOrdinalSpanBuilder(ExclusiveMaximumOrdinalSpan strictSupremumSpan)
     {
         StrictSupremumSpan = strictSupremumSpan;
     }
 
-    public StrictSupremumSpan StrictSupremumSpan {get;set;}
+    public ExclusiveMaximumOrdinalSpan StrictSupremumSpan {get;set;}
 
     private readonly int OrdinalSpanLength => StrictSupremumSpan.InnerReadOnlySpan.Length;
 

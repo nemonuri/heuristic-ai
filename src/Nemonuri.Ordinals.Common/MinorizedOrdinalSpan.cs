@@ -3,9 +3,9 @@ namespace Nemonuri.Ordinals;
 public readonly ref struct MinorizedOrdinalSpan
 {
     private readonly Span<nint> _ordinalSpan;
-    private readonly StrictSupremumSpan _strictSupremumSpan;
+    private readonly ExclusiveMaximumOrdinalSpan _strictSupremumSpan;
 
-    internal MinorizedOrdinalSpan(Span<nint> ordinalSpan, StrictSupremumSpan strictSupremumSpan)
+    internal MinorizedOrdinalSpan(Span<nint> ordinalSpan, ExclusiveMaximumOrdinalSpan strictSupremumSpan)
     {
         //TODO: Validate
 
@@ -15,7 +15,7 @@ public readonly ref struct MinorizedOrdinalSpan
 
     public Span<nint> OrdinalSpan => _ordinalSpan;
 
-    public StrictSupremumSpan StrictSupremumSpan => _strictSupremumSpan;
+    public ExclusiveMaximumOrdinalSpan StrictSupremumSpan => _strictSupremumSpan;
 
     public int Length => _ordinalSpan.Length;
 
@@ -24,5 +24,3 @@ public readonly ref struct MinorizedOrdinalSpan
         _ordinalSpan.Clear();
     }
 }
-
-//public readonly struct MinorizedOrdinalRange

@@ -11,4 +11,12 @@
     <PackageReference Include="System.Numerics.Tensors" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Nemonuri.Ordinals.Common\Nemonuri.Ordinals.Common.csproj" />
+  </ItemGroup>
+
+  <!-- ConfigDirectory -->
+    <Import Project="$(ConfigDirectory)CommunityToolkit.Diagnostics.props" />
+  <!-- /ConfigDirectory -->
+
 </Project>
