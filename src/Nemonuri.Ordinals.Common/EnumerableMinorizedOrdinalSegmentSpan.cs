@@ -1,38 +1,24 @@
 namespace Nemonuri.Ordinals;
 
-public readonly ref struct EnumerableMinorizedOrdinalSegmentSpan
+public readonly ref partial struct EnumerableMinorizedOrdinalSegmentSpan
 {
-    private readonly ExclusiveMaximumOrdinalReadOnlySpan _exclusiveMaximumOrdinalReadOnlySpan;
+    private readonly ReadOnlySpan<nint> _cardinalitySpan;
 
     private readonly Span<nint> _innerOrdinalSpan;
 
-    public EnumerableMinorizedOrdinalSegmentSpan(ExclusiveMaximumOrdinalReadOnlySpan exclusiveMaximumOrdinalReadOnlySpan, Span<nint> innerOrdinalSpan)
+    public EnumerableMinorizedOrdinalSegmentSpan(ReadOnlySpan<nint> cardinalitySpan, Span<nint> innerOrdinalSpan)
     {
-        Guard.IsEqualTo(exclusiveMaximumOrdinalReadOnlySpan.Length, innerOrdinalSpan.Length);
+        Guard.IsEqualTo(cardinalitySpan.Length, innerOrdinalSpan.Length);
 
-        _exclusiveMaximumOrdinalReadOnlySpan = exclusiveMaximumOrdinalReadOnlySpan;
+        _cardinalitySpan = cardinalitySpan;
         _innerOrdinalSpan = innerOrdinalSpan;
-        _innerOrdinalSpan.Clear();
     }
 
-    public ExclusiveMaximumOrdinalReadOnlySpan ExclusiveMaximumOrdinalReadOnlySpan => _exclusiveMaximumOrdinalReadOnlySpan;
+    public ReadOnlySpan<nint> CardinalitySpan => _cardinalitySpan;
 
     public Enumerator GetEnumerator() => new (this);
 
-    public readonly ref struct Enumerator
-    {
-        private readonly EnumerableMinorizedOrdinalSegmentSpan _span;
+    public void Clear() => _innerOrdinalSpan.Clear();
 
-        internal Enumerator(EnumerableMinorizedOrdinalSegmentSpan span)
-        {
-            _span = span;
-        }
-
-        public bool MoveNext()
-        {
-            throw new NotImplementedException(); //TODO
-        }
-
-        public ReadOnlySpan<nint> Current => _span._innerOrdinalSpan;
-    }
+    public int Length => _cardinalitySpan.Length;
 }
