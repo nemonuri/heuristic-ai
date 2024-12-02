@@ -15,4 +15,6 @@ public readonly ref partial struct MinorizedOrdinalSegmentSpan
     public ref MinorizedOrdinalSegment this[int index] => ref _innerSpan[index];
 
     public ExclusiveMaximumOrdinalReadOnlySpanFactory GetExclusiveMaximumOrdinalReadOnlySpanFactory() => new(this);
+
+    public EnumerableOrdinalSegmentSpanFactory GetEnumerableOrdinalSegmentSpanFactory() => new(this);
 }
