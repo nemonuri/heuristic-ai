@@ -14,20 +14,20 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
 
     public bool TryAlterToLeaf<TLeaf>
     (
-        IUnmanagedAlternatePremise<TLeaf, TAlternate> leafAlternatePremise,
+        IAlternateSpanPremise<TLeaf, TAlternate> leafAlternateSpanPremise,
         out TLeaf? outLeaf
     )
 #if NET9_0_OR_GREATER
     where TLeaf : allows ref struct
 #endif
     {
-        if (_innerReadOnlySpan.Length != leafAlternatePremise.OutAlternateSpanLength)
+        if (_innerReadOnlySpan.Length != leafAlternateSpanPremise.GetOutAlternateSpanLength())
         {
             outLeaf = default;
             return false;
         }
 
-        return leafAlternatePremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf);
+        return leafAlternateSpanPremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf);
     }
 
     public TLeaf AlterToLeaf<TLeaf>
