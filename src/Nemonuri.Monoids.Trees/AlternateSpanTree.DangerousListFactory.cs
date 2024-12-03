@@ -7,41 +7,31 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
     {
         public AlternateSpanTree<TAlternate> AlternateSpanTree {get;}
 
-        public IDangerousUnmanagedAlternateBasedSemigroupDecompositionPremise<TAlternate> TreeAlternatePremise {get;}
+        public ISpanPartitionPremise<TAlternate> SpanPartitionPremise {get;}
+
+        public int DangerousSpanSnapshotSpanLength {get;}
 
         internal DangerousListFactory
         (
             AlternateSpanTree<TAlternate> alternateSpanTree,
-            IDangerousUnmanagedAlternateBasedSemigroupDecompositionPremise<TAlternate> treeAlternatePremise
+            ISpanPartitionPremise<TAlternate> spanPartitionPremis
         )
         {
             AlternateSpanTree = alternateSpanTree;
-            TreeAlternatePremise = treeAlternatePremise;
+            SpanPartitionPremise = spanPartitionPremis;
+            DangerousSpanSnapshotSpanLength = spanPartitionPremis.GetOutRangesSpanLength(alternateSpanTree.InnerReadOnlySpan);
         }
-
-        public int DangerousSpanSnapshotSpanLength => TreeAlternatePremise.OutElementsLength;
 
         public DangerousAlternateSpanTreeList<TAlternate> Create(Span<DangerousSpanSnapshot<TAlternate>> dangerousSpanSnapshotSpan)
         {
             Guard.IsEqualTo(DangerousSpanSnapshotSpanLength, dangerousSpanSnapshotSpan.Length);
 
-            TreeAlternatePremise.DecomposeInChain(AlternateSpanTree.InnerReadOnlySpan, dangerousSpanSnapshotSpan);
+            DangerousSpanList<TAlternate> innerDangerousSpanList = 
+                DangerousSpanPartitionTheory
+                    .GetDangerousSpanListFactory(AlternateSpanTree.InnerReadOnlySpan, SpanPartitionPremise)
+                    .Create(dangerousSpanSnapshotSpan);
 
-            return new DangerousAlternateSpanTreeList<TAlternate>(new DangerousSpanList<TAlternate>(dangerousSpanSnapshotSpan));
-        }
-
-        public bool TryCreate(Span<DangerousSpanSnapshot<TAlternate>> dangerousSpanSnapshotSpan, out DangerousAlternateSpanTreeList<TAlternate> outDangerousSpanList)
-        {
-            Guard.IsEqualTo(DangerousSpanSnapshotSpanLength, dangerousSpanSnapshotSpan.Length);
-
-            if (!TreeAlternatePremise.TryDecomposeInChain(AlternateSpanTree.InnerReadOnlySpan, dangerousSpanSnapshotSpan))
-            {
-                outDangerousSpanList = default;
-                return false;
-            }
-
-            outDangerousSpanList = new DangerousAlternateSpanTreeList<TAlternate>(new DangerousSpanList<TAlternate>(dangerousSpanSnapshotSpan));
-            return true;
+            return new DangerousAlternateSpanTreeList<TAlternate>(innerDangerousSpanList);
         }
     }
     

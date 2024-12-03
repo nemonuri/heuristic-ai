@@ -14,40 +14,65 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
 
     public bool TryAlterToLeaf<TLeaf>
     (
-        IAlternateSpanPremise<TLeaf, TAlternate> leafAlternateSpanPremise,
+        IFixedLengthAlternateSpanPremise<TLeaf, TAlternate> alternateSpanPremise,
         out TLeaf? outLeaf
     )
 #if NET9_0_OR_GREATER
-    where TLeaf : allows ref struct
+        where TLeaf : allows ref struct
 #endif
     {
-        if (_innerReadOnlySpan.Length != leafAlternateSpanPremise.GetOutAlternateSpanLength())
+        if (_innerReadOnlySpan.Length != alternateSpanPremise.AlternateSpanLength)
         {
             outLeaf = default;
             return false;
         }
 
-        return leafAlternateSpanPremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf);
+        return alternateSpanPremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf);
     }
 
     public TLeaf AlterToLeaf<TLeaf>
     (
-        IUnmanagedAlternatePremise<TLeaf, TAlternate> leafAlternatePremise
+        IFixedLengthAlternateSpanPremise<TLeaf, TAlternate> alternateSpanPremise
     )
 #if NET9_0_OR_GREATER
-    where TLeaf : allows ref struct
+        where TLeaf : allows ref struct
 #endif
     {
-        TLeaf result = leafAlternatePremise.MapToDomain(_innerReadOnlySpan);
+        TLeaf result = alternateSpanPremise.MapToDomain(_innerReadOnlySpan);
         return result;
+    }
+
+    public bool TryAlterToLeaf<TLeaf>
+    (
+        IFloatingLengthAlternateSpanPremise<TLeaf, TAlternate> alternateSpanPremise,
+        out TLeaf? outLeaf,
+        out int consumedSpanLength
+    )
+#if NET9_0_OR_GREATER
+        where TLeaf : allows ref struct
+#endif
+    {
+        return alternateSpanPremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf, out consumedSpanLength);
+    }
+
+    public TLeaf AlterToLeaf<TLeaf>
+    (
+        IFloatingLengthAlternateSpanPremise<TLeaf, TAlternate> alternateSpanPremise,
+        out int consumedSpanLength
+    )
+#if NET9_0_OR_GREATER
+        where TLeaf : allows ref struct
+#endif
+    {
+        return alternateSpanPremise.MapToDomain(_innerReadOnlySpan, out consumedSpanLength);
     }
 
     public DangerousListFactory GetDangerousSpanListFactory
     (
-        IDangerousUnmanagedAlternateBasedSemigroupDecompositionPremise<TAlternate> treeAlternatePremise
+        ISpanPartitionPremise<TAlternate> spanPartitionPremise
     )
     {
-        return new (this, treeAlternatePremise);
+        return new (this, spanPartitionPremise);
     }
 
     public static Factory<T> CreateFactory<T>
