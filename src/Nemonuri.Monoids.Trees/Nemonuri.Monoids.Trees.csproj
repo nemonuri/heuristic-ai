@@ -11,6 +11,7 @@
 
     <Import Project="$(NugetConfigDirectory)Nemonuri.Monoids.Common.props" />
     <Import Project="$(NugetConfigDirectory)Nemonuri.Monoids.Unmanaged.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Collections.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->

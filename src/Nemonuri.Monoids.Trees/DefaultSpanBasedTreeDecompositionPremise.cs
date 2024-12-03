@@ -1,41 +1,39 @@
-using System.Buffers;
-using Nemonuri.Monoids.Unmanaged;
-
 namespace Nemonuri.Monoids.Trees;
 
-public class DefaultSpanBasedTreeDecompositionPremise<TLeaf, TTree>
-    where TTree : unmanaged
+public class DefaultDangerousUnmanagedAlternateBasedTreeDecompositionPremise<TDomain, TUnmanagedAlternate>
+    where TUnmanagedAlternate : unmanaged
 #if NET9_0_OR_GREATER
-    where TLeaf : allows ref struct
+    where TDomain : allows ref struct
 #endif
 {
-    public DefaultSpanBasedTreeDecompositionPremise
+    public DefaultDangerousUnmanagedAlternateBasedTreeDecompositionPremise
     (
-        IAlternatePremise<TTree, TLeaf> treeAndLeafAlternatePremise,
-        ISpanBasedSemigroupDecompositionPremise<TTree> treeToTreeDecompositionPremise
+        IUnmanagedAlternatePremise<TDomain, TUnmanagedAlternate> unmanagedAlternatePremise,
+        IDangerousUnmanagedAlternateBasedSemigroupDecompositionPremise<TUnmanagedAlternate> alternateSpanDecompositionPremise
     )
     {
-        TreeAndLeafAlternatePremise = treeAndLeafAlternatePremise;
-        TreeToTreeDecompositionPremise = treeToTreeDecompositionPremise;
-
-        InvokeForLeafOrTreesRequiredByteSpanLength = treeToTreeDecompositionPremise.GetOutElementsByteLength();
+        UnmanagedAlternatePremise = unmanagedAlternatePremise;
+        AlternateSpanDecompositionPremise = alternateSpanDecompositionPremise;
     }
     
-    public IAlternatePremise<TTree, TLeaf> TreeAndLeafAlternatePremise {get;}
-    public ISpanBasedSemigroupDecompositionPremise<TTree> TreeToTreeDecompositionPremise {get;}
+    public IUnmanagedAlternatePremise<TDomain, TUnmanagedAlternate> UnmanagedAlternatePremise {get;}
 
-    public bool TryAlterToLeaf(TTree tree, [NotNullWhen(true)] out TLeaf? outLeaf) =>
-        TreeAndLeafAlternatePremise.TryMapToAlternate(tree, out outLeaf);
+    public IDangerousUnmanagedAlternateBasedSemigroupDecompositionPremise<TUnmanagedAlternate> AlternateSpanDecompositionPremise {get;}
+
+    public int InvokeForLeafOrTreesRequiredByteSpanLength => AlternateSpanDecompositionPremise.OutElementsLength;
+
+    public bool TryAlterToLeaf(TTree tree, [NotNullWhen(true)] out TDomain? outLeaf) =>
+        UnmanagedAlternatePremise.TryMapToAlternate(tree, out outLeaf);
 
     public bool TryDecomposeToTrees(TTree tree, Span<TTree> outElements) =>
-        TreeToTreeDecompositionPremise.TryDecomposeInChain(tree, outElements);
+        AlternateSpanDecompositionPremise.TryDecomposeInChain(tree, outElements);
 
-    public int InvokeForLeafOrTreesRequiredByteSpanLength {get;}
+    
 
     public void InvokeForLeafOrTrees<TContext>
     (
         TTree tree,
-        Action<TLeaf, TContext> leafAction,
+        Action<TDomain, TContext> leafAction,
         ReadOnlySpanAction<TTree, TContext> treesAction,
         TContext context,
         Span<byte> requiredByteSpan
@@ -46,7 +44,7 @@ public class DefaultSpanBasedTreeDecompositionPremise<TLeaf, TTree>
     {
         Guard.IsEqualTo(InvokeForLeafOrTreesRequiredByteSpanLength, requiredByteSpan.Length);
             
-        if (TryAlterToLeaf(tree, out TLeaf? leaf1))
+        if (TryAlterToLeaf(tree, out TDomain? leaf1))
         {
             leafAction(leaf1, context);
         }
