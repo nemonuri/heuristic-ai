@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Nemonuri.Monoids;
 
-public interface ISemigroupDecompositionPremise<TDomain>
+internal interface ISemigroupDecompositionPremise<TDomain>
 #if NET9_0_OR_GREATER
     where TDomain : allows ref struct
 #endif
