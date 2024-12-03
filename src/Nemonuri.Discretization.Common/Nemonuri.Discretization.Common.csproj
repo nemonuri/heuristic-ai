@@ -10,7 +10,7 @@
   <!-- NugetConfig -->
     <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
 
-    <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Common.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Collections.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->
