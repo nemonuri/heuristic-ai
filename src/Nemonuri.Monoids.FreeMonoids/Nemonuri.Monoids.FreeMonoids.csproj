@@ -11,13 +11,6 @@
     <LangVersion>13</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Label="Pack">
-    <Version>0.0.1</Version>
-    <!-- <RepositoryUrl></RepositoryUrl> -->
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <-- PackageReleaseNotes --><-- /PackageReleaseNotes -->
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.3.2" />
   </ItemGroup>
@@ -26,6 +19,14 @@
     <PackageReference Include="Nemonuri.Common.Primitives" Version="*" />
   </ItemGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
+
+    <PropertyGroup>
+      <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
 
 </Project>

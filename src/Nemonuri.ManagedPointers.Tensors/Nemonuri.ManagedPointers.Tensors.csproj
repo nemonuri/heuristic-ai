@@ -17,7 +17,6 @@
     <Import Project="$(ConfigDirectory)Pack.Common.props" />
 
     <PropertyGroup>
-      <Version>0.0.1</Version>
       <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
     </PropertyGroup>
 
