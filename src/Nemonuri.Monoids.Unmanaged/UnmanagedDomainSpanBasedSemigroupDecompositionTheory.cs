@@ -1,6 +1,3 @@
-using System.Runtime.InteropServices;
-using CommunityToolkit.Diagnostics;
-
 namespace Nemonuri.Monoids.Unmanaged;
 
 public static class UnmanagedDomainSpanBasedSemigroupDecompositionTheory

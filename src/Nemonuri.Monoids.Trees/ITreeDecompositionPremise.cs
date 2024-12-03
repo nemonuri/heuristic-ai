@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Nemonuri.Monoids.Trees;
+﻿namespace Nemonuri.Monoids.Trees;
 
 public interface ITreeDecompositionPremise<TLeaf, TTree> :
     IMonoidDecompositionPremise<TTree>,

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+
+    <Import Project="$(NugetConfigDirectory)Nemonuri.ManagedPointers.Common.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Monoids.Common.props" />
+  <!-- /NugetConfig -->
+
+  <!-- Pack -->
+    <Import Project="$(ConfigDirectory)Pack.Common.props" />
+
+    <PropertyGroup>
+      <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)/../Directory.Pack.props" />  
+  <!-- /Pack -->
+
+</Project>
