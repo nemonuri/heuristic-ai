@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Nemonuri.Monoids</RootNamespace>
@@ -10,6 +10,9 @@
 
   <!-- NugetConfig -->
     <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+    <Import Project="$(NugetConfigDirectory)PolySharp.props" />
+    <Import Project="$(NugetConfigDirectory)System.Memory.props" />
+    <Import Project="$(NugetConfigDirectory)Microsoft.Bcl.Memory.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->

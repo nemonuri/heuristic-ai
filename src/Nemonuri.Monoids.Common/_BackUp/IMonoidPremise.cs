@@ -1,6 +1,6 @@
 ﻿namespace Nemonuri.Monoids;
 
-public interface IMonoidPremise<TDomain> :
+internal interface IMonoidPremise<TDomain> :
     IMonoidOperationPremise<TDomain>,
     IMonoidDecompositionPremise<TDomain>
 #if NET9_0_OR_GREATER
