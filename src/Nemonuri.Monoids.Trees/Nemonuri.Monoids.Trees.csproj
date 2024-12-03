@@ -8,7 +8,9 @@
 
   <!-- NugetConfig -->
     <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+
     <Import Project="$(NugetConfigDirectory)Nemonuri.Monoids.Common.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Monoids.Unmanaged.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->

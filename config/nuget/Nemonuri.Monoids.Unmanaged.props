@@ -1,0 +1,5 @@
+<Project>
+    <ItemGroup>
+        <PackageReference Include="Nemonuri.Monoids.Unmanaged" Version="*" />
+    </ItemGroup>
+</Project>
