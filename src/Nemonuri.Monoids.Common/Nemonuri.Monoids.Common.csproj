@@ -8,6 +8,10 @@
     <LangVersion>13</LangVersion>
   </PropertyGroup>
 
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
+  <!-- /NugetConfig -->
+
   <!-- Pack -->
     <Import Project="$(ConfigDirectory)Pack.Common.props" />
 

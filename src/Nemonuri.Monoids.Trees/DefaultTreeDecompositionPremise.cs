@@ -1,6 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Diagnostics;
-
 namespace Nemonuri.Monoids.Trees;
 
 public class DefaultTreeDecompositionPremise<TLeaf, TTree>
@@ -38,6 +35,31 @@ public class DefaultTreeDecompositionPremise<TLeaf, TTree>
         else if(TryDecomposeToTrees(tree, out IEnumerable<TTree>? trees1))
         {
             treesAction(trees1);
+        }
+        else
+        {
+            ThrowHelper.ThrowInvalidOperationException("Should not reach here");
+        }   
+    }
+
+    public void InvokeForLeafOrTrees<TContext>
+    (
+        TTree tree,
+        Action<TLeaf, TContext> leafAction,
+        Action<IEnumerable<TTree>, TContext> treesAction,
+        TContext context
+    )
+#if NET9_0_OR_GREATER
+    where TContext : allows ref struct
+#endif
+    {
+        if (TryAlterToLeaf(tree, out TLeaf? leaf1))
+        {
+            leafAction(leaf1, context);
+        }
+        else if(TryDecomposeToTrees(tree, out IEnumerable<TTree>? trees1))
+        {
+            treesAction(trees1, context);
         }
         else
         {
