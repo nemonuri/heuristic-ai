@@ -7,6 +7,8 @@ public interface IListPartitionPremise<in T, in TList>
         , allows ref struct
 #endif
 {
+    int GetOutRangesSpanLength(TList target);
+
     void Partition(TList target, Span<Range> outRanges);
 
     bool TryPartition(TList target, Span<Range> outRanges);
