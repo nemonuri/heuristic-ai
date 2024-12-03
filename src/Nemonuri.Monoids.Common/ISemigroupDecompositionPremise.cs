@@ -7,7 +7,7 @@ public interface ISemigroupDecompositionPremise<TDomain>
     where TDomain : allows ref struct
 #endif
 {
-    IEnumerable<TDomain>DecomposeInChain(TDomain element);
+    IEnumerable<TDomain> DecomposeInChain(TDomain element);
 
     bool TryDecomposeInChain(TDomain element, [NotNullWhen(true)] out IEnumerable<TDomain>? outElements);
 }

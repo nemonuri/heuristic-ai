@@ -12,7 +12,7 @@
     <Import Project="$(ConfigDirectory)Pack.Common.props" />
 
     <PropertyGroup>
-      <Version>0.0.1</Version>
+      <Version>0.0.2</Version>
       <!-- PackageReleaseNotes --><!-- /PackageReleaseNotes -->
     </PropertyGroup>
 
