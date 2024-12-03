@@ -16,10 +16,3 @@ public interface IUnmanagedAlternatePremise<TDomain, TUnmanagedAlternate>
 
     bool TryMapToAlternate(TDomain domain, Span<TUnmanagedAlternate> outAlternateSpan);
 }
-
-
-public interface IUnmanagedAlternateBasedSemigroupDecompositionPremise<TUnmanagedDomain>
-    where TUnmanagedDomain : unmanaged
-{
-    
-}
