@@ -10,21 +10,22 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
     {
         public T Material {get;}
 
-        public IUnmanagedAlternatePremise<T, TAlternate> UnmanagedAlternatePremise {get;}
+        public IAlternateSpanBasedSemigroupDecompositionPremise<T, TAlternate> DecompositionPremise {get;}
 
-        public Factory(T material, IUnmanagedAlternatePremise<T, TAlternate> unmanagedAlternatePremise)
+        public int AlternateSpanLength {get;}
+
+        public Factory(T material, IAlternateSpanBasedSemigroupDecompositionPremise<T, TAlternate> decompositionPremise)
         {
             Material = material;
-            UnmanagedAlternatePremise = unmanagedAlternatePremise;
+            DecompositionPremise = decompositionPremise;
+            AlternateSpanLength = decompositionPremise.GetOutAlternateSpanLength(material);
         }
-
-        public int AlternateSpanLength => UnmanagedAlternatePremise.OutAlternateSpanLength;
 
         public AlternateSpanTree<TAlternate> Create(Span<TAlternate> alternateSpan)
         {
             Guard.IsEqualTo(AlternateSpanLength, alternateSpan.Length);
 
-            UnmanagedAlternatePremise.MapToAlternate(Material, alternateSpan);
+            DecompositionPremise.DecomposeInChain(Material, alternateSpan);
 
             return new AlternateSpanTree<TAlternate>(alternateSpan);
         }
@@ -33,7 +34,7 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
         {
             Guard.IsEqualTo(AlternateSpanLength, alternateSpan.Length);
 
-            if(!UnmanagedAlternatePremise.TryMapToAlternate(Material, alternateSpan))
+            if(!DecompositionPremise.TryDecomposeInChain(Material, alternateSpan))
             {
                 outAlternateSpanTree = default;
                 return false;

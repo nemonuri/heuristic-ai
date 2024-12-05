@@ -52,7 +52,13 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
         where TLeaf : allows ref struct
 #endif
     {
-        return alternateSpanPremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf, out consumedSpanLength);
+        bool successIfValidLength = alternateSpanPremise.TryMapToDomain(_innerReadOnlySpan, out outLeaf, out consumedSpanLength);
+        if (_innerReadOnlySpan.Length != consumedSpanLength)
+        {
+            return false;
+        }
+        
+        return successIfValidLength;
     }
 
     public TLeaf AlterToLeaf<TLeaf>
@@ -64,7 +70,10 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
         where TLeaf : allows ref struct
 #endif
     {
-        return alternateSpanPremise.MapToDomain(_innerReadOnlySpan, out consumedSpanLength);
+        TLeaf resultIfValidLength = alternateSpanPremise.MapToDomain(_innerReadOnlySpan, out consumedSpanLength);
+        Guard.IsEqualTo(_innerReadOnlySpan.Length, consumedSpanLength);
+
+        return resultIfValidLength;
     }
 
     public DangerousListFactory GetDangerousSpanListFactory
@@ -78,12 +87,12 @@ public readonly ref partial struct AlternateSpanTree<TAlternate>
     public static Factory<T> CreateFactory<T>
     (
         T material,
-        IUnmanagedAlternatePremise<T, TAlternate> unmanagedAlternatePremise
+        IAlternateSpanBasedSemigroupDecompositionPremise<T, TAlternate> decompositionPremise
     )
 #if NET9_0_OR_GREATER
     where T : allows ref struct
 #endif
     {
-        return new (material, unmanagedAlternatePremise);
+        return new (material, decompositionPremise);
     }
 }
