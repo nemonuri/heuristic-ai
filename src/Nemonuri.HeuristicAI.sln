@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Monoids.Trees", "N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Monoids.Common", "Nemonuri.Monoids.Common\Nemonuri.Monoids.Common.csproj", "{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Ordinals.Sequences", "Nemonuri.Ordinals.Sequences\Nemonuri.Ordinals.Sequences.csproj", "{37653E2E-DE1B-414A-9FED-82CD3A8FE5F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37653E2E-DE1B-414A-9FED-82CD3A8FE5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37653E2E-DE1B-414A-9FED-82CD3A8FE5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37653E2E-DE1B-414A-9FED-82CD3A8FE5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37653E2E-DE1B-414A-9FED-82CD3A8FE5F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
