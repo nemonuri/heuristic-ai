@@ -9,6 +9,7 @@
   <!-- NugetConfig -->
     <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props" />
     <Import Project="$(NugetConfigDirectory)Nemonuri.Ordinals.Common.props" />
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Maths.Sequences.props" />
   <!-- /NugetConfig -->
 
   <!-- Pack -->

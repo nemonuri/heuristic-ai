@@ -1,0 +1,5 @@
+<Project>
+    <ItemGroup>
+        <PackageReference Include="Nemonuri.Ordinals.Common" Version="*" />
+    </ItemGroup>
+</Project>
