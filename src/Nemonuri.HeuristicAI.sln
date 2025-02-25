@@ -3,26 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Monoids.Trees", "Nemonuri.Monoids.Trees\Nemonuri.Monoids.Trees.csproj", "{C57DA262-09A9-46A8-9AFE-552A873A988C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Monoids.Common", "Nemonuri.Monoids.Common\Nemonuri.Monoids.Common.csproj", "{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Tensors.Common", "Nemonuri.Tensors.Common\Nemonuri.Tensors.Common.csproj", "{C510C221-303C-47AA-A575-0AEF31EE14EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C57DA262-09A9-46A8-9AFE-552A873A988C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C57DA262-09A9-46A8-9AFE-552A873A988C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C57DA262-09A9-46A8-9AFE-552A873A988C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C57DA262-09A9-46A8-9AFE-552A873A988C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DDB96E8-5261-4AAE-8284-527DDF16D6FB}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
