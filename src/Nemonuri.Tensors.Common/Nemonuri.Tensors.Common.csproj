@@ -7,4 +7,9 @@
     <RootNamespace>Nemonuri.Tensors</RootNamespace>
   </PropertyGroup>
 
+  <!-- NugetConfig -->
+    <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props"/>
+    <Import Project="$(NugetConfigDirectory)System.Numerics.Tensors.props"/>
+  <!-- /NugetConfig -->
+
 </Project>
