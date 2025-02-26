@@ -3,43 +3,39 @@
 [Experimental(Experimentals.TensorTDiagId, UrlFormat = Experimentals.SharedUrlFormat)]
 public static class TensorTheory
 {
-    public static void Project<T>
+    public static void ProjectToSpan<T>
     (
         scoped ReadOnlyTensorSpan<T> source,
-        scoped ReadOnlySpan<nint> startIndexes,
+        Span<nint> indexes,
         Span<T> destination,
-        Span<nint> endIndexes,
         out int projectedCount,
-        out bool isFinished
+        out bool overflowed
     )
     {
-        Guard.IsEqualTo(startIndexes.Length, source.Rank);
-        Guard.IsEqualTo(endIndexes.Length, source.Rank);
+        Guard.IsEqualTo(indexes.Length, source.Rank);
 
-        Span<nint> curIndexes = stackalloc nint[startIndexes.Length];
-        startIndexes.CopyTo(curIndexes);
-
+        overflowed = false;
         projectedCount = 0;
         while (true)
         {
-            //destination[projectedCount] = 
+            if (!(projectedCount < destination.Length))
+            {
+                break;
+            }
 
-            
-            //AdjustIndexes(source.Rank - 1, 1, curIndexes, source.Lengths, out bool overflowed);
-            SetIndexesToSuccessor(curIndexes, source.Lengths, out bool overflowed);
-            
+            destination[projectedCount] = source[indexes];
+            projectedCount++;
+
+            SetSuccessorIndexes(indexes, source.Lengths, out overflowed);            
 
             if (overflowed)
             {
                 break;
             }
-
-            projectedCount++;
         }
-        
     }
 
-    public static void SetIndexesToSuccessor(Span<nint> indexes, scoped ReadOnlySpan<nint> lengths, out bool overflowed)
+    public static void SetSuccessorIndexes(Span<nint> indexes, scoped ReadOnlySpan<nint> lengths, out bool overflowed)
     {
         AdjustIndexes(indexes.Length - 1, 1, indexes, lengths, out overflowed);
     }
