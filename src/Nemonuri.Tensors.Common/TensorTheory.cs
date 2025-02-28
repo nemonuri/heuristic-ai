@@ -1,8 +1,43 @@
-﻿namespace Nemonuri.Tensors;
+﻿using System.Buffers;
+
+namespace Nemonuri.Tensors;
 
 [Experimental(Experimentals.TensorTDiagId, UrlFormat = Experimentals.SharedUrlFormat)]
 public static class TensorTheory
 {
+    public static void ProjectToSpan<T>
+    (
+        Func<Span<nint>, T> source,
+        ReadOnlySpan<nint> lengths,
+        Span<nint> indexes,
+        Span<T> destination,
+        out int projectedCount,
+        out bool overflowed
+    )
+    {
+        Guard.IsEqualTo(lengths.Length, indexes.Length);
+
+        overflowed = false;
+        projectedCount = 0;
+        while (true)
+        {
+            if (!(projectedCount < destination.Length))
+            {
+                break;
+            }
+
+            destination[projectedCount] = source(indexes);
+            projectedCount++;
+
+            SetSuccessorIndexes(indexes, lengths, out overflowed);
+
+            if (overflowed)
+            {
+                break;
+            }
+        }
+    }
+
     public static void ProjectToSpan<T>
     (
         scoped ReadOnlyTensorSpan<T> source,
@@ -26,7 +61,7 @@ public static class TensorTheory
             destination[projectedCount] = source[indexes];
             projectedCount++;
 
-            SetSuccessorIndexes(indexes, source.Lengths, out overflowed);            
+            SetSuccessorIndexes(indexes, source.Lengths, out overflowed);
 
             if (overflowed)
             {
@@ -97,5 +132,3 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
         curIndexes[curIndex] = result.Remainder;
     }
 }
-
-//public delegate 
