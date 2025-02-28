@@ -35,6 +35,38 @@ public static class TensorTheory
         }
     }
 
+    public static void ProjectToTensorSpan<T>
+    (
+        scoped ReadOnlySpan<T> source,
+        TensorSpan<T> destination,
+        Span<nint> indexes,
+        out int projectedCount,
+        out bool overflowed
+    )
+    {
+        Guard.IsEqualTo(indexes.Length, destination.Rank);
+
+        overflowed = false;
+        projectedCount = 0;
+        while (true)
+        {
+            if (!(projectedCount < source.Length))
+            {
+                break;
+            }
+
+            destination[indexes] = source[projectedCount];
+            projectedCount++;
+
+            SetSuccessorIndexes(indexes, destination.Lengths, out overflowed);
+
+            if (overflowed)
+            {
+                break;
+            }
+        }
+    }
+
     public static void SetSuccessorIndexes(Span<nint> indexes, scoped ReadOnlySpan<nint> lengths, out bool overflowed)
     {
         AdjustIndexes(indexes.Length - 1, 1, indexes, lengths, out overflowed);
