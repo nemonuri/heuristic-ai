@@ -107,6 +107,12 @@ public static class TensorTheory
         AdjustIndexes(indexes.Length - 1, 1, indexes, lengths, out overflowed);
     }
 
+    public static bool TrySetSuccessorIndexes(Span<nint> indexes, scoped ReadOnlySpan<nint> lengths)
+    {
+        SetSuccessorIndexes(indexes, lengths, out bool overflowed);
+        return !overflowed;
+    }
+
 /**
 Source:
 https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensors/src/System/Numerics/Tensors/netcore/TensorSpanHelpers.cs
@@ -130,5 +136,37 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
 
         AdjustIndexes(curIndex - 1, result.Quotient, curIndexes, lengths, out overflowed);
         curIndexes[curIndex] = result.Remainder;
+    }
+
+    public static void FillTextureTensor<T>
+    (
+        TensorSpan<T> textureTensor,
+        Func<ReadOnlySpan<nint>, T> textureFactory
+    )
+    {
+        Guard.IsNotNull(textureFactory);
+        Span<nint> indexes = stackalloc nint[textureTensor.Rank];
+        indexes.Clear();
+
+        while (TrySetSuccessorIndexes(indexes, textureTensor.Lengths))
+        {
+            textureTensor[indexes] = textureFactory.Invoke(indexes);
+        }
+    }
+
+    public static void CreateOrUpdateTextureTensor<T>
+    (
+        ref Tensor<T>? textureTensor,
+        ReadOnlySpan<nint> lengths,
+        Func<ReadOnlySpan<nint>, T> textureFactory
+    )
+    {
+        Guard.IsNotNull(textureFactory);
+
+        textureTensor ??= Tensor.Create<T>(lengths);
+
+        Guard.IsTrue(lengths.SequenceEqual(textureTensor.Lengths));
+
+        FillTextureTensor(textureTensor.AsTensorSpan(), textureFactory);
     }
 }
