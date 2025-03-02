@@ -66,6 +66,17 @@ public static class TensorTheory
         );
         //---|
 
+        //--- Create Permutation Group Applyed Lengths ---
+        Span<nint> permutationGroupApplyedLengths = stackalloc nint[source.Lengths.Length];
+
+        PermutationTheory.ApplyMultiProjection
+        (
+            source: source.Lengths,
+            projectionIndexes: normalizedPermutationGroup,
+            destination: permutationGroupApplyedLengths
+        );
+        //---|
+
         while (true)
         {
             if (!(projectedCount < destination.Length))
@@ -77,7 +88,7 @@ public static class TensorTheory
             projectedCount++;
 
             PermutationTheory.ApplyMultiProjection(indexes, normalizedPermutationGroup, indexes);
-            SetSuccessorIndexes(indexes, source.Lengths, out overflowed);
+            SetSuccessorIndexes(indexes, permutationGroupApplyedLengths, out overflowed);
             PermutationTheory.ApplyMultiProjection(indexes, inverseNormalizedPermutationGroup, indexes);
 
             if (overflowed)
