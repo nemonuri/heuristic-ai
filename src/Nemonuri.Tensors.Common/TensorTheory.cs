@@ -154,7 +154,7 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
 
     public static void CreateOrUpdateTextureTensor<T>
     (
-        ref Tensor<T>? textureTensor,
+        [NotNull] ref Tensor<T>? textureTensor,
         ReadOnlySpan<nint> lengths,
         TexturePixelValueFactory<T> texturePixelValueFactory
     )
