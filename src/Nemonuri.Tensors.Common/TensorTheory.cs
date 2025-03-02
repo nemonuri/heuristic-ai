@@ -1,13 +1,11 @@
-﻿using System.Buffers;
-
-namespace Nemonuri.Tensors;
+﻿namespace Nemonuri.Tensors;
 
 [Experimental(Experimentals.TensorTDiagId, UrlFormat = Experimentals.SharedUrlFormat)]
 public static class TensorTheory
 {
     public static void ProjectToSpan<T>
     (
-        Func<Span<nint>, T> source,
+        TexturePixelValueFactory<T> source,
         ReadOnlySpan<nint> lengths,
         Span<nint> indexes,
         Span<T> destination,
@@ -141,16 +139,16 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
     public static void FillTextureTensor<T>
     (
         TensorSpan<T> textureTensor,
-        Func<ReadOnlySpan<nint>, T> textureFactory
+        TexturePixelValueFactory<T> texturePixelValueFactory
     )
     {
-        Guard.IsNotNull(textureFactory);
+        Guard.IsNotNull(texturePixelValueFactory);
         Span<nint> indexes = stackalloc nint[textureTensor.Rank];
         indexes.Clear();
 
         while (TrySetSuccessorIndexes(indexes, textureTensor.Lengths))
         {
-            textureTensor[indexes] = textureFactory.Invoke(indexes);
+            textureTensor[indexes] = texturePixelValueFactory.Invoke(indexes);
         }
     }
 
@@ -158,15 +156,15 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
     (
         ref Tensor<T>? textureTensor,
         ReadOnlySpan<nint> lengths,
-        Func<ReadOnlySpan<nint>, T> textureFactory
+        TexturePixelValueFactory<T> texturePixelValueFactory
     )
     {
-        Guard.IsNotNull(textureFactory);
+        Guard.IsNotNull(texturePixelValueFactory);
 
         textureTensor ??= Tensor.Create<T>(lengths);
 
         Guard.IsTrue(lengths.SequenceEqual(textureTensor.Lengths));
 
-        FillTextureTensor(textureTensor.AsTensorSpan(), textureFactory);
+        FillTextureTensor(textureTensor.AsTensorSpan(), texturePixelValueFactory);
     }
 }
