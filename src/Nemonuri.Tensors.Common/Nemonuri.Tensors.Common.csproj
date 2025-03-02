@@ -10,6 +10,7 @@
   <!-- NugetConfig -->
     <Import Project="$(NugetConfigDirectory)CommunityToolkit.Diagnostics.props"/>
     <Import Project="$(NugetConfigDirectory)System.Numerics.Tensors.props"/>
+    <Import Project="$(NugetConfigDirectory)Nemonuri.Maths.Permutations.props"/>
   <!-- /NugetConfig -->
 
   <!-- Pack -->

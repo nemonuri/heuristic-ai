@@ -1,4 +1,6 @@
-﻿namespace Nemonuri.Tensors;
+﻿using Nemonuri.Maths.Permutations;
+
+namespace Nemonuri.Tensors;
 
 [Experimental(Experimentals.TensorTDiagId, UrlFormat = Experimentals.SharedUrlFormat)]
 public static class TensorTheory
@@ -28,6 +30,55 @@ public static class TensorTheory
             projectedCount++;
 
             SetSuccessorIndexes(indexes, lengths, out overflowed);
+
+            if (overflowed)
+            {
+                break;
+            }
+        }
+    }
+
+    public static void ProjectToSpan<T>
+    (
+        scoped ReadOnlyTensorSpan<T> source,
+        Span<nint> indexes,
+        ReadOnlySpan<int> normalizedPermutationGroup,
+        Span<T> destination,
+        out int projectedCount,
+        out bool overflowed
+    )
+    {
+        Guard.IsEqualTo(indexes.Length, source.Rank);
+        Guard.IsTrue(PermutationTheory.IsNormalizedPermutationGroup(normalizedPermutationGroup));
+        Guard.IsEqualTo(indexes.Length, normalizedPermutationGroup.Length);
+
+        overflowed = false;
+        projectedCount = 0;
+
+        //--- Create Inverse Normalized Permutation Group ---
+        Span<int> inverseNormalizedPermutationGroup = stackalloc int[normalizedPermutationGroup.Length];
+
+        PermutationTheory.GetInverseNormalizedPermutationGroup
+        (
+            source: normalizedPermutationGroup,
+            destination: inverseNormalizedPermutationGroup,
+            guardingSourceIsNormalizedPermutationGroup: false
+        );
+        //---|
+
+        while (true)
+        {
+            if (!(projectedCount < destination.Length))
+            {
+                break;
+            }
+
+            destination[projectedCount] = source[indexes];
+            projectedCount++;
+
+            PermutationTheory.ApplyMultiProjection(indexes, normalizedPermutationGroup, indexes);
+            SetSuccessorIndexes(indexes, source.Lengths, out overflowed);
+            PermutationTheory.ApplyMultiProjection(indexes, inverseNormalizedPermutationGroup, indexes);
 
             if (overflowed)
             {
