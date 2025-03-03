@@ -3,7 +3,7 @@
 namespace Nemonuri.Tensors;
 
 [Experimental(Experimentals.TensorTDiagId, UrlFormat = Experimentals.SharedUrlFormat)]
-public static class TensorTheory
+public static partial class TensorTheory
 {
     public static void ProjectToSpan<T>
     (
@@ -43,6 +43,8 @@ public static class TensorTheory
         scoped ReadOnlyTensorSpan<T> source,
         Span<nint> indexes,
         ReadOnlySpan<int> normalizedPermutationGroup,
+        PermutationMode gettingItemIndexesPermutationMode,
+        PermutationMode settingSuccessorIndexesPermutationMode,
         Span<T> destination,
         out int projectedCount,
         out bool overflowed
@@ -77,12 +79,34 @@ public static class TensorTheory
         );
         //---|
 
+        int currentPermutationLevel = 0;
         while (true)
         {
             if (!(projectedCount < destination.Length))
             {
                 break;
             }
+
+            //--- ---
+            int goalPermutationLevel = (int)gettingItemIndexesPermutationMode;
+            while (currentPermutationLevel != goalPermutationLevel)
+            {
+                if (currentPermutationLevel < goalPermutationLevel)
+                {
+                    PermutationTheory.ApplyMultiProjection(indexes, normalizedPermutationGroup, indexes);
+                    currentPermutationLevel++;
+                }
+                else if (currentPermutationLevel > goalPermutationLevel)
+                {
+                    PermutationTheory.ApplyMultiProjection(indexes, inverseNormalizedPermutationGroup, indexes);
+                    currentPermutationLevel--;
+                }
+                else
+                {
+                    ThrowHelper.ThrowInvalidDataException();
+                }
+            }
+            //---|
 
             destination[projectedCount] = source[indexes];
             projectedCount++;
