@@ -135,6 +135,17 @@ public static partial class TensorTheory
                 break;
             }
         }
+
+        //--- Restore indexes position ---
+        ApplyMultiProjectionAndAdjustLevel
+        (
+            indexes, 
+            normalizedPermutationGroup,
+            inverseNormalizedPermutationGroup,
+            ref currentPermutationLevel,
+            (int)settingSuccessorIndexesPermutationMode
+        );
+        //---|
     }
 
     public static void ProjectToSpan<T>

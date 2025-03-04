@@ -26,6 +26,8 @@ public class TensorTheoryTest
             CreateTensor3x3(),
             startIndexes,
             normalizedPermutationGroup,
+            PermutationMode.None,
+            PermutationMode.Normal,
             expectedDestination
         );
     }
@@ -64,6 +66,8 @@ public class TensorTheoryTest
     (
         int[] startIndexes,
         int[] normalizedPermutationGroup,
+        PermutationMode gettingItemIndexesPermutationMode,
+        PermutationMode settingSuccessorIndexesPermutationMode,
         float[] expectedDestination
     )
     {
@@ -72,23 +76,26 @@ public class TensorTheoryTest
             CreateTensor5x3(),
             startIndexes,
             normalizedPermutationGroup,
+            gettingItemIndexesPermutationMode,
+            settingSuccessorIndexesPermutationMode,
             expectedDestination
         );
     }
     public static Tensor<float> CreateTensor5x3()
     {
-        float[] flattened2 =
+        float[] flattened =
         [
             1.1f, 1.2f, 1.3f, 1.4f, 1.5f,
             2.1f, 2.2f, 2.3f, 2.4f, 2.5f,
             3.1f, 3.2f, 3.3f, 3.4f, 3.5f
         ];
-        return Tensor.Create(flattened2, [3,3]);
+        return Tensor.Create(flattened, [3,3]);
     }
-    public static TheoryData<int[], int[], float[]> Data2 =>
+    public static TheoryData<int[], int[], PermutationMode, PermutationMode, float[]> Data2 =>
     new ()
     {
-        {[0,0], [0,1], [1.1f, 1.2f]}
+        {[0,0], [0,1], PermutationMode.None, PermutationMode.None, [1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 2.1f, 2.2f]},
+        {[0,0], [1,0], PermutationMode.None, PermutationMode.None, [1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 2.1f, 2.2f, 2.3f, 2.4f]}
     };
 
 
