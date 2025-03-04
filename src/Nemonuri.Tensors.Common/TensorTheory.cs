@@ -93,22 +93,26 @@ public static partial class TensorTheory
         }
         //---|
 
-        //Todo: 군 연산으로, 더 효율적으로 만들 수 있을텐데
-
         //--- Create permutatedLengths ---
         Span<nint> permutatedLengths = stackalloc nint[source.Lengths.Length];
+        source.Lengths.CopyTo(permutatedLengths);
+
         if (useSettingSuccessorIndexesPermutationGroup)
         {
+            //TODO: 군 작용으로, 더 효율적으로 만들 수 있을텐데
             PermutationTheory.ApplyMultiProjection
             (
-                source: source.Lengths,
+                source: permutatedLengths,
+                projectionIndexes: inverseGettingItemIndexesPermutationGroup,
+                destination: permutatedLengths
+            );
+
+            PermutationTheory.ApplyMultiProjection
+            (
+                source: permutatedLengths,
                 projectionIndexes: settingSuccessorIndexesPermutationGroup,
                 destination: permutatedLengths
             );
-        }
-        else
-        {
-            source.Lengths.CopyTo(permutatedLengths);
         }
         //---|
 
@@ -267,34 +271,5 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
         Guard.IsTrue(lengths.SequenceEqual(textureTensor.Lengths));
 
         FillTextureTensor(textureTensor.AsTensorSpan(), texturePixelValueFactory);
-    }
-
-    public static void ApplyMultiProjectionAndAdjustLevel<T>
-    (
-        Span<T> targetSpan,
-        ReadOnlySpan<int> levelUpProjectionIndexes,
-        ReadOnlySpan<int> levelDownProjectionIndexes,
-        ref int permutationLevel,
-        int goalPermutationLevel
-    )
-        where T : unmanaged
-    {
-        while (permutationLevel != goalPermutationLevel)
-        {
-            if (permutationLevel < goalPermutationLevel)
-            {
-                PermutationTheory.ApplyMultiProjection(targetSpan, levelUpProjectionIndexes, targetSpan);
-                permutationLevel++;
-            }
-            else if (permutationLevel > goalPermutationLevel)
-            {
-                PermutationTheory.ApplyMultiProjection(targetSpan, levelDownProjectionIndexes, targetSpan);
-                permutationLevel--;
-            }
-            else
-            {
-                ThrowHelper.ThrowInvalidDataException();
-            }
-        }
     }
 }

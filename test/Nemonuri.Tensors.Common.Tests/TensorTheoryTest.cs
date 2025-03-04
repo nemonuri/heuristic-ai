@@ -25,12 +25,11 @@ public class TensorTheoryTest
     {
         StartIndexes_NormalizedPermutationGroup__ProjectToSpan__Destination_Is_Expected
         (
-            CreateTensor3x3(),
-            startIndexes,
-            normalizedPermutationGroup,
-            PermutationMode.None,
-            PermutationMode.Normal,
-            expectedDestination
+            source: CreateTensor3x3(),
+            startIndexes: startIndexes,
+            gettingItemIndexesPermutationGroup: [0,1],
+            settingSuccessorIndexesPermutationGroup: normalizedPermutationGroup,
+            expectedDestination: expectedDestination
         );
     }
     public static Tensor<float> CreateTensor3x3()
@@ -67,20 +66,18 @@ public class TensorTheoryTest
     public void Tensor5x3_StartIndexes_NormalizedPermutationGroup__ProjectToSpan__Destination_Is_Expected
     (
         int[] startIndexes,
-        int[] normalizedPermutationGroup,
-        PermutationMode gettingItemIndexesPermutationMode,
-        PermutationMode settingSuccessorIndexesPermutationMode,
+        int[] gettingItemIndexesPermutationGroup,
+        int[] settingSuccessorIndexesPermutationGroup,
         float[] expectedDestination
     )
     {
         StartIndexes_NormalizedPermutationGroup__ProjectToSpan__Destination_Is_Expected
         (
-            CreateTensor5x3(),
-            startIndexes,
-            normalizedPermutationGroup,
-            gettingItemIndexesPermutationMode,
-            settingSuccessorIndexesPermutationMode,
-            expectedDestination
+            source: CreateTensor5x3(),
+            startIndexes: startIndexes,
+            gettingItemIndexesPermutationGroup: gettingItemIndexesPermutationGroup,
+            settingSuccessorIndexesPermutationGroup: settingSuccessorIndexesPermutationGroup,
+            expectedDestination: expectedDestination
         );
     }
     public static Tensor<float> CreateTensor5x3()
@@ -91,13 +88,15 @@ public class TensorTheoryTest
             2.1f, 2.2f, 2.3f, 2.4f, 2.5f,
             3.1f, 3.2f, 3.3f, 3.4f, 3.5f
         ];
-        return Tensor.Create(flattened, [3,3]);
+        return Tensor.Create(flattened, [3,5]);
     }
-    public static TheoryData<int[], int[], PermutationMode, PermutationMode, float[]> Data2 =>
+    public static TheoryData<int[], int[], int[], float[]> Data2 =>
     new ()
     {
-        {[0,0], [0,1], PermutationMode.None, PermutationMode.None, [1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 2.1f, 2.2f]},
-        {[0,0], [1,0], PermutationMode.None, PermutationMode.None, [1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 2.1f, 2.2f, 2.3f, 2.4f]}
+        {[0,0], [0,1], [0,1], [1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 2.1f, 2.2f]},
+        {[0,0], [0,1], [1,0], [1.1f, 2.1f, 3.1f, 1.2f, 2.2f]},
+        {[3,2], [1,0], [1,0], [3.4f, 3.5f, 0, 0, 0]},
+        {[3,2], [1,0], [0,1], [3.4f, 1.5f, 2.5f, 3.5f]}
     };
 
 
@@ -105,9 +104,8 @@ public class TensorTheoryTest
     (
         Tensor<float> source,
         int[] startIndexes,
-        int[] normalizedPermutationGroup,
-        PermutationMode gettingItemIndexesPermutationMode,
-        PermutationMode settingSuccessorIndexesPermutationMode,
+        int[] gettingItemIndexesPermutationGroup,
+        int[] settingSuccessorIndexesPermutationGroup,
         float[] expectedDestination   
     )
     {
@@ -118,12 +116,13 @@ public class TensorTheoryTest
         //Act
         TensorTheory.ProjectToSpan
         (
-            source: source,
-            indexes: currentIndexes,
-            normalizedPermutationGroup: normalizedPermutationGroup,
-            gettingItemIndexesPermutationMode: default,
-            settingSuccessorIndexesPermutationMode: default,
-            destination: actualDestination,
+            source,
+            currentIndexes,
+            true,
+            gettingItemIndexesPermutationGroup,
+            true,
+            settingSuccessorIndexesPermutationGroup,
+            actualDestination,
             out _,
             out _
         );
@@ -133,9 +132,8 @@ public class TensorTheoryTest
         (
             $"""
             startIndexes: {LogTheory.ToLogString(startIndexes)}
-            normalizedPermutationGroup: {LogTheory.ToLogString(normalizedPermutationGroup)}
-            gettingItemIndexesPermutationMode: {gettingItemIndexesPermutationMode}
-            settingSuccessorIndexesPermutationMode: {settingSuccessorIndexesPermutationMode}
+            gettingItemIndexesPermutationGroup: {LogTheory.ToLogString(gettingItemIndexesPermutationGroup)}
+            settingSuccessorIndexesPermutationGroup: {LogTheory.ToLogString(settingSuccessorIndexesPermutationGroup)}
             currentIndexes: {LogTheory.ToLogString(currentIndexes)}
             expectedDestination: {LogTheory.ToLogString(expectedDestination)}
             actualDestination: {LogTheory.ToLogString(actualDestination)}
@@ -169,7 +167,7 @@ public class TensorTheoryTest
         for (int i = 0; i < goalPermutationLevels.Length; i++)
         {
             int goalPermutationLevel = goalPermutationLevels[i];
-            TensorTheory.ApplyMultiProjectionAndAdjustLevel
+            PermutationTheory.ApplyMultiProjectionAndAdjustLevel
             (
                 targetSpan: actualDestination,
                 levelUpProjectionIndexes: normalizedPermutationGroup,
