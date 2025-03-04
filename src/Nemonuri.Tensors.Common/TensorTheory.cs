@@ -253,4 +253,33 @@ https://github.com/dotnet/runtime/blob/main/src/libraries/System.Numerics.Tensor
 
         FillTextureTensor(textureTensor.AsTensorSpan(), texturePixelValueFactory);
     }
+
+    public static void ApplyMultiProjectionAndAdjustLevel<T>
+    (
+        Span<T> targetSpan,
+        ReadOnlySpan<int> levelUpProjectionIndexes,
+        ReadOnlySpan<int> levelDownProjectionIndexes,
+        ref int permutationLevel,
+        int goalPermutationLevel
+    )
+        where T : unmanaged
+    {
+        while (permutationLevel != goalPermutationLevel)
+        {
+            if (permutationLevel < goalPermutationLevel)
+            {
+                PermutationTheory.ApplyMultiProjection(targetSpan, levelUpProjectionIndexes, targetSpan);
+                permutationLevel++;
+            }
+            else if (permutationLevel > goalPermutationLevel)
+            {
+                PermutationTheory.ApplyMultiProjection(targetSpan, levelDownProjectionIndexes, targetSpan);
+                permutationLevel--;
+            }
+            else
+            {
+                ThrowHelper.ThrowInvalidDataException();
+            }
+        }
+    }
 }
