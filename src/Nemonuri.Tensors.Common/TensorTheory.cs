@@ -143,7 +143,7 @@ public static partial class TensorTheory
             normalizedPermutationGroup,
             inverseNormalizedPermutationGroup,
             ref currentPermutationLevel,
-            (int)settingSuccessorIndexesPermutationMode
+            0
         );
         //---|
     }
