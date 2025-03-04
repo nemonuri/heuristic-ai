@@ -71,12 +71,27 @@ public static partial class TensorTheory
         //--- Create Permutation Group Applyed Lengths ---
         Span<nint> permutationGroupApplyedLengths = stackalloc nint[source.Lengths.Length];
 
-        PermutationTheory.ApplyMultiProjection
+        if (settingSuccessorIndexesPermutationMode == PermutationMode.None)
+        {
+            source.Lengths.CopyTo(permutationGroupApplyedLengths);
+        }
+        else if
         (
-            source: source.Lengths,
-            projectionIndexes: normalizedPermutationGroup,
-            destination: permutationGroupApplyedLengths
-        );
+            settingSuccessorIndexesPermutationMode == PermutationMode.Normal ||
+            settingSuccessorIndexesPermutationMode == PermutationMode.Inverse
+        )
+        {
+            PermutationTheory.ApplyMultiProjection
+            (
+                source: source.Lengths,
+                projectionIndexes: settingSuccessorIndexesPermutationMode == PermutationMode.Normal ? normalizedPermutationGroup : inverseNormalizedPermutationGroup,
+                destination: permutationGroupApplyedLengths
+            );
+        }
+        else
+        {
+            ThrowHelper.ThrowInvalidOperationException();
+        }
         //---|
 
         int currentPermutationLevel = 0;
@@ -87,33 +102,33 @@ public static partial class TensorTheory
                 break;
             }
 
-            //--- ---
-            int goalPermutationLevel = (int)gettingItemIndexesPermutationMode;
-            while (currentPermutationLevel != goalPermutationLevel)
-            {
-                if (currentPermutationLevel < goalPermutationLevel)
-                {
-                    PermutationTheory.ApplyMultiProjection(indexes, normalizedPermutationGroup, indexes);
-                    currentPermutationLevel++;
-                }
-                else if (currentPermutationLevel > goalPermutationLevel)
-                {
-                    PermutationTheory.ApplyMultiProjection(indexes, inverseNormalizedPermutationGroup, indexes);
-                    currentPermutationLevel--;
-                }
-                else
-                {
-                    ThrowHelper.ThrowInvalidDataException();
-                }
-            }
+            //--- Get item mode permutation ---
+            ApplyMultiProjectionAndAdjustLevel
+            (
+                indexes, 
+                normalizedPermutationGroup,
+                inverseNormalizedPermutationGroup,
+                ref currentPermutationLevel,
+                (int)gettingItemIndexesPermutationMode
+            );
             //---|
 
             destination[projectedCount] = source[indexes];
             projectedCount++;
 
-            PermutationTheory.ApplyMultiProjection(indexes, normalizedPermutationGroup, indexes);
+
+            //--- Get item mode permutation ---
+            ApplyMultiProjectionAndAdjustLevel
+            (
+                indexes, 
+                normalizedPermutationGroup,
+                inverseNormalizedPermutationGroup,
+                ref currentPermutationLevel,
+                (int)settingSuccessorIndexesPermutationMode
+            );
+            //---|
+
             SetSuccessorIndexes(indexes, permutationGroupApplyedLengths, out overflowed);
-            PermutationTheory.ApplyMultiProjection(indexes, inverseNormalizedPermutationGroup, indexes);
 
             if (overflowed)
             {

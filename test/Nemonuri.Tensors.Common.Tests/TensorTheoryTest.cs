@@ -97,6 +97,8 @@ public class TensorTheoryTest
         Tensor<float> source,
         int[] startIndexes,
         int[] normalizedPermutationGroup,
+        PermutationMode gettingItemIndexesPermutationMode,
+        PermutationMode settingSuccessorIndexesPermutationMode,
         float[] expectedDestination   
     )
     {
@@ -107,10 +109,12 @@ public class TensorTheoryTest
         //Act
         TensorTheory.ProjectToSpan
         (
-            source,
-            currentIndexes,
-            normalizedPermutationGroup,
-            actualDestination,
+            source: source,
+            indexes: currentIndexes,
+            normalizedPermutationGroup: normalizedPermutationGroup,
+            gettingItemIndexesPermutationMode: default,
+            settingSuccessorIndexesPermutationMode: default,
+            destination: actualDestination,
             out _,
             out _
         );
@@ -121,6 +125,8 @@ public class TensorTheoryTest
             $"""
             startIndexes: {LogTheory.ConvertSpanToLogString(startIndexes)}
             normalizedPermutationGroup: {LogTheory.ConvertSpanToLogString(normalizedPermutationGroup)}
+            gettingItemIndexesPermutationMode: {gettingItemIndexesPermutationMode}
+            settingSuccessorIndexesPermutationMode: {settingSuccessorIndexesPermutationMode}
             currentIndexes: {LogTheory.ConvertSpanToLogString(currentIndexes)}
             expectedDestination: {LogTheory.ConvertSpanToLogString(expectedDestination)}
             actualDestination: {LogTheory.ConvertSpanToLogString(actualDestination)}
