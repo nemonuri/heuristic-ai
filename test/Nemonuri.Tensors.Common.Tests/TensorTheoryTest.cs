@@ -1,5 +1,7 @@
 ﻿using System.Numerics.Tensors;
+using Nemonuri.Maths.Permutations;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace Nemonuri.Tensors.Common.Tests;
 
@@ -130,17 +132,76 @@ public class TensorTheoryTest
         _output.WriteLine
         (
             $"""
-            startIndexes: {LogTheory.ConvertSpanToLogString(startIndexes)}
-            normalizedPermutationGroup: {LogTheory.ConvertSpanToLogString(normalizedPermutationGroup)}
+            startIndexes: {LogTheory.ToLogString(startIndexes)}
+            normalizedPermutationGroup: {LogTheory.ToLogString(normalizedPermutationGroup)}
             gettingItemIndexesPermutationMode: {gettingItemIndexesPermutationMode}
             settingSuccessorIndexesPermutationMode: {settingSuccessorIndexesPermutationMode}
-            currentIndexes: {LogTheory.ConvertSpanToLogString(currentIndexes)}
-            expectedDestination: {LogTheory.ConvertSpanToLogString(expectedDestination)}
-            actualDestination: {LogTheory.ConvertSpanToLogString(actualDestination)}
+            currentIndexes: {LogTheory.ToLogString(currentIndexes)}
+            expectedDestination: {LogTheory.ToLogString(expectedDestination)}
+            actualDestination: {LogTheory.ToLogString(actualDestination)}
             """
         );
         Assert.Equal(expectedDestination, actualDestination);
     }
 
+    [Theory]
+    [MemberData(nameof(Data3))]
+    public void Source_NormalizedPermutationGroup_GoalPermutationLevels__ApplyMultiProjectionAndAdjustLevel__Destination_Is_Expected
+    (
+        float[] source,
+        int[] normalizedPermutationGroup,
+        int[] goalPermutationLevels,
+        float[] expectedDestination
+    )
+    {
+        //Model
+        Span<float> actualDestination = stackalloc float[source.Length];
+        source.AsSpan().CopyTo(actualDestination);
+        Span<int> inverseNormalizedPermutationGroup = stackalloc int[normalizedPermutationGroup.Length];
+        PermutationTheory.GetInverseNormalizedPermutationGroup
+        (
+            source: normalizedPermutationGroup,
+            destination: inverseNormalizedPermutationGroup
+        );
+        int permutationLevel = 0;
 
+        //Act
+        for (int i = 0; i < goalPermutationLevels.Length; i++)
+        {
+            int goalPermutationLevel = goalPermutationLevels[i];
+            TensorTheory.ApplyMultiProjectionAndAdjustLevel
+            (
+                targetSpan: actualDestination,
+                levelUpProjectionIndexes: normalizedPermutationGroup,
+                levelDownProjectionIndexes: inverseNormalizedPermutationGroup,
+                permutationLevel: ref permutationLevel,
+                goalPermutationLevel: goalPermutationLevel
+            );
+        }
+
+        //Assert
+        _output.WriteLine
+        (
+            $"""
+            source: {LogTheory.ToLogString(source)}
+            normalizedPermutationGroup: {LogTheory.ToLogString(normalizedPermutationGroup)}
+            inverseNormalizedPermutationGroup: {LogTheory.ToLogString(inverseNormalizedPermutationGroup)}
+            goalPermutationLevels: {LogTheory.ToLogString(goalPermutationLevels)}
+            expectedDestination: {LogTheory.ToLogString(expectedDestination)}
+            actualDestination: {LogTheory.ToLogString(actualDestination)}
+            """
+        );
+        Assert.Equal(expectedDestination, actualDestination);
+    }
+    public static TheoryData<float[], int[], int[], float[]> Data3 =>
+    new ()
+    {
+        {[1,2,3], [0,1,2], [1], [1,2,3]},
+        {[1,2,3], [0,1,2], [-1], [1,2,3]},
+        {[4,7,9,9.5f], [3,0,1,2], [1], [9.5f,4,7,9]},
+        {[4,7,9,9.5f], [3,0,1,2], [2], [9,9.5f,4,7]},
+        {[4,7,9,9.5f], [3,0,1,2], [-1], [7,9,9.5f,4]},
+        {[4,7,9,9.5f], [3,0,1,2], [1,-1], [7,9,9.5f,4]},
+        {[4,7,9,9.5f], [3,0,1,2], [1,2,-1,0], [4,7,9,9.5f]}
+    };
 }
