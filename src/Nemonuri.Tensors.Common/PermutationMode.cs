@@ -1,3 +1,5 @@
+#if false
+
 namespace Nemonuri.Tensors;
 
 public enum PermutationMode
@@ -6,3 +8,5 @@ public enum PermutationMode
     None = 0,
     Normal = 1
 }
+
+#endif

@@ -42,59 +42,78 @@ public static partial class TensorTheory
     (
         scoped ReadOnlyTensorSpan<T> source,
         Span<nint> indexes,
-        ReadOnlySpan<int> normalizedPermutationGroup,
-        PermutationMode gettingItemIndexesPermutationMode,
-        PermutationMode settingSuccessorIndexesPermutationMode,
+        bool useGettingItemIndexesPermutationGroup,
+        ReadOnlySpan<int> gettingItemIndexesPermutationGroup,
+        bool useSettingSuccessorIndexesPermutationGroup,
+        ReadOnlySpan<int> settingSuccessorIndexesPermutationGroup,
         Span<T> destination,
         out int projectedCount,
         out bool overflowed
     )
     {
         Guard.IsEqualTo(indexes.Length, source.Rank);
-        Guard.IsTrue(PermutationTheory.IsNormalizedPermutationGroup(normalizedPermutationGroup));
-        Guard.IsEqualTo(indexes.Length, normalizedPermutationGroup.Length);
+        if (useGettingItemIndexesPermutationGroup)
+        {
+            Guard.IsTrue(PermutationTheory.IsNormalizedPermutationGroup(gettingItemIndexesPermutationGroup));
+            Guard.IsEqualTo(indexes.Length, gettingItemIndexesPermutationGroup.Length);
+        }
+        if (useSettingSuccessorIndexesPermutationGroup)
+        {
+            Guard.IsTrue(PermutationTheory.IsNormalizedPermutationGroup(settingSuccessorIndexesPermutationGroup));
+            Guard.IsEqualTo(indexes.Length, settingSuccessorIndexesPermutationGroup.Length);
+        }
 
-        overflowed = false;
-        projectedCount = 0;
+        //--- Create gettingItemIndexesPermutationGroup ---
+        Span<int> inverseGettingItemIndexesPermutationGroup = 
+            useGettingItemIndexesPermutationGroup ? stackalloc int[gettingItemIndexesPermutationGroup.Length] : [];
 
-        //--- Create Inverse Normalized Permutation Group ---
-        Span<int> inverseNormalizedPermutationGroup = stackalloc int[normalizedPermutationGroup.Length];
-
-        PermutationTheory.GetInverseNormalizedPermutationGroup
-        (
-            source: normalizedPermutationGroup,
-            destination: inverseNormalizedPermutationGroup,
-            guardingSourceIsNormalizedPermutationGroup: false
-        );
+        if (useGettingItemIndexesPermutationGroup)
+        {
+            PermutationTheory.GetInverseNormalizedPermutationGroup
+            (
+                source: gettingItemIndexesPermutationGroup,
+                destination: inverseGettingItemIndexesPermutationGroup,
+                guardingSourceIsNormalizedPermutationGroup: false
+            );
+        }
         //---|
 
-        //--- Create Permutation Group Applyed Lengths ---
-        Span<nint> permutationGroupApplyedLengths = stackalloc nint[source.Lengths.Length];
+        //--- Create settingSuccessorIndexesPermutationGroup ---
+        Span<int> inverseSettingSuccessorIndexesPermutationGroup = 
+            useSettingSuccessorIndexesPermutationGroup ? stackalloc int[settingSuccessorIndexesPermutationGroup.Length] : [];
 
-        if (settingSuccessorIndexesPermutationMode == PermutationMode.None)
+        if (useSettingSuccessorIndexesPermutationGroup)
         {
-            source.Lengths.CopyTo(permutationGroupApplyedLengths);
+            PermutationTheory.GetInverseNormalizedPermutationGroup
+            (
+                source: settingSuccessorIndexesPermutationGroup,
+                destination: inverseSettingSuccessorIndexesPermutationGroup,
+                guardingSourceIsNormalizedPermutationGroup: false
+            );
         }
-        else if
-        (
-            settingSuccessorIndexesPermutationMode == PermutationMode.Normal ||
-            settingSuccessorIndexesPermutationMode == PermutationMode.Inverse
-        )
+        //---|
+
+        //Todo: 군 연산으로, 더 효율적으로 만들 수 있을텐데
+
+        //--- Create permutatedLengths ---
+        Span<nint> permutatedLengths = stackalloc nint[source.Lengths.Length];
+        if (useSettingSuccessorIndexesPermutationGroup)
         {
             PermutationTheory.ApplyMultiProjection
             (
                 source: source.Lengths,
-                projectionIndexes: settingSuccessorIndexesPermutationMode == PermutationMode.Normal ? normalizedPermutationGroup : inverseNormalizedPermutationGroup,
-                destination: permutationGroupApplyedLengths
+                projectionIndexes: settingSuccessorIndexesPermutationGroup,
+                destination: permutatedLengths
             );
         }
         else
         {
-            ThrowHelper.ThrowInvalidOperationException();
+            source.Lengths.CopyTo(permutatedLengths);
         }
         //---|
 
-        int currentPermutationLevel = 0;
+        overflowed = false;
+        projectedCount = 0;
         while (true)
         {
             if (!(projectedCount < destination.Length))
@@ -102,50 +121,20 @@ public static partial class TensorTheory
                 break;
             }
 
-            //--- Get item mode permutation ---
-            ApplyMultiProjectionAndAdjustLevel
-            (
-                indexes, 
-                normalizedPermutationGroup,
-                inverseNormalizedPermutationGroup,
-                ref currentPermutationLevel,
-                (int)gettingItemIndexesPermutationMode
-            );
-            //---|
-
+            if (useGettingItemIndexesPermutationGroup) {PermutationTheory.ApplyMultiProjection(indexes, gettingItemIndexesPermutationGroup, indexes);}
             destination[projectedCount] = source[indexes];
+            if (useGettingItemIndexesPermutationGroup) {PermutationTheory.ApplyMultiProjection(indexes, inverseGettingItemIndexesPermutationGroup, indexes);}
             projectedCount++;
 
-
-            //--- Get item mode permutation ---
-            ApplyMultiProjectionAndAdjustLevel
-            (
-                indexes, 
-                normalizedPermutationGroup,
-                inverseNormalizedPermutationGroup,
-                ref currentPermutationLevel,
-                (int)settingSuccessorIndexesPermutationMode
-            );
-            //---|
-
-            SetSuccessorIndexes(indexes, permutationGroupApplyedLengths, out overflowed);
+            if (useSettingSuccessorIndexesPermutationGroup) {PermutationTheory.ApplyMultiProjection(indexes, settingSuccessorIndexesPermutationGroup, indexes);}
+            SetSuccessorIndexes(indexes, permutatedLengths, out overflowed);
+            if (useSettingSuccessorIndexesPermutationGroup) {PermutationTheory.ApplyMultiProjection(indexes, inverseSettingSuccessorIndexesPermutationGroup, indexes);}
 
             if (overflowed)
             {
                 break;
             }
         }
-
-        //--- Restore indexes position ---
-        ApplyMultiProjectionAndAdjustLevel
-        (
-            indexes, 
-            normalizedPermutationGroup,
-            inverseNormalizedPermutationGroup,
-            ref currentPermutationLevel,
-            0
-        );
-        //---|
     }
 
     public static void ProjectToSpan<T>
