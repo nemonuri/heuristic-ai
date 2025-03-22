@@ -42,6 +42,7 @@ public static partial class TensorTheory
     (
         scoped ReadOnlyTensorSpan<T> source,
         Span<nint> indexes,
+        ReadOnlySpan<bool> indexReverseModes,
         PermutationGroup gettingItemIndexesPermutationGroup,
         PermutationGroup settingSuccessorIndexesPermutationGroup,
         Span<T> destination,
@@ -52,6 +53,7 @@ public static partial class TensorTheory
         Guard.IsEqualTo(indexes.Length, source.Rank);
         Guard.IsEqualTo(indexes.Length, gettingItemIndexesPermutationGroup.Length);
         Guard.IsEqualTo(indexes.Length, settingSuccessorIndexesPermutationGroup.Length);
+        Guard.IsEqualTo(indexes.Length, indexReverseModes.Length);
 
         //--- Create inverse permutation group ---
         gettingItemIndexesPermutationGroup.TryGetInversePermutationGroup
@@ -75,8 +77,14 @@ public static partial class TensorTheory
         settingSuccessorIndexesPermutationGroup.TryApply(permutatedLengths, permutatedLengths);
         //---|
 
+        //--- Create permutatedIsReverseIndexes ---
+        Span<bool> permutatedIndexeReverseModes = stackalloc bool[indexReverseModes.Length];
+        gettingItemIndexesPermutationGroup.TryApply(indexReverseModes, permutatedIndexeReverseModes);
+        //---|
+
         overflowed = false;
         projectedCount = 0;
+        Span<nint> reversedIndexes = stackalloc nint[indexes.Length];
         while (true)
         {
             if (!(projectedCount < destination.Length))
@@ -85,7 +93,16 @@ public static partial class TensorTheory
             }
 
             gettingItemIndexesPermutationGroup.TryApply(indexes, indexes);
-            destination[projectedCount] = source[indexes];
+            //--- Get reversedIndexes ---
+            if (!indexReverseModes.IsEmpty)
+            {
+                for (int i = 0; i < indexes.Length; i++)
+                {
+                    reversedIndexes[i] = indexReverseModes[i] ? source.Lengths[i] - indexes[i] : indexes[i];
+                }
+            }
+            //---|
+            destination[projectedCount] = source[indexReverseModes.IsEmpty ? indexes : reversedIndexes];
             inverseGettingItemIndexesPermutationGroup.TryApply(indexes, indexes);
             projectedCount++;
 
@@ -104,6 +121,7 @@ public static partial class TensorTheory
     (
         scoped ReadOnlyTensorSpan<T> source,
         Span<nint> indexes,
+        ReadOnlySpan<bool> indexReverseModes,
         bool useGettingItemIndexesPermutationGroup,
         ReadOnlySpan<int> gettingItemIndexesPermutationGroup,
         bool useSettingSuccessorIndexesPermutationGroup,
@@ -116,6 +134,7 @@ public static partial class TensorTheory
         (
             source,
             indexes,
+            indexReverseModes,
             useGettingItemIndexesPermutationGroup ? new PermutationGroup(gettingItemIndexesPermutationGroup) : default,
             useSettingSuccessorIndexesPermutationGroup ? new PermutationGroup(settingSuccessorIndexesPermutationGroup) : default,
             destination,
