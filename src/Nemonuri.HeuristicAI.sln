@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Tensors.Common", "Nemonuri.Tensors.Common\Nemonuri.Tensors.Common.csproj", "{C510C221-303C-47AA-A575-0AEF31EE14EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nemonuri.Beliefs.Common", "Nemonuri.Beliefs.Common\Nemonuri.Beliefs.Common.csproj", "{7800F394-27C0-4121-B15D-9B258F1F1A62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C510C221-303C-47AA-A575-0AEF31EE14EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7800F394-27C0-4121-B15D-9B258F1F1A62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7800F394-27C0-4121-B15D-9B258F1F1A62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7800F394-27C0-4121-B15D-9B258F1F1A62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7800F394-27C0-4121-B15D-9B258F1F1A62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
