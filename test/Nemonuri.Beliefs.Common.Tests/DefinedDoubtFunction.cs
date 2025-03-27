@@ -1,14 +1,12 @@
 
 
-
-
 namespace Nemonuri.Beliefs.Common.Tests;
 
 public static class DefinedDoubtFunction
 {
-    public static DoubtFunction GetIndexFunction {get;} = IdentityFunctionImpl;
+    public static DoubtFunction GetIndexFunction {get;} = GetIndexFunctionImpl;
 
-    private static double IdentityFunctionImpl(uint index)
+    private static double GetIndexFunctionImpl(uint index)
     {
         return index;
     }
@@ -20,10 +18,12 @@ public static class DefinedDoubtFunctional
 
     private static double IdentityFunctionalImpl
     (
-        uint[] prevIndexes,
         DoubtFunction[] prevDoubtFunctions,
-        uint currentIndex,
+        uint[] prevIndexes,
         DoubtFunction currentDoubtFunction,
+        uint currentIndex,
+        DoubtFunction? nextDoubtFunction,
+        Doubt2DFunction? nextDoubt2DFunction,
         uint nextIndex
     )
     {
@@ -34,19 +34,20 @@ public static class DefinedDoubtFunctional
 
     private static double DistanceFunctionalImpl
     (
-        uint[] prevIndexes, 
-        DoubtFunction[] prevDoubtFunctions, 
-        uint currentIndex, 
-        DoubtFunction currentDoubtFunction, 
+        DoubtFunction[] prevDoubtFunctions,
+        uint[] prevIndexes,
+        DoubtFunction currentDoubtFunction,
+        uint currentIndex,
+        DoubtFunction? nextDoubtFunction,
+        Doubt2DFunction? nextDoubt2DFunction,
         uint nextIndex
     )
     {
-        uint prevIndex = prevIndexes[^1];
-        DoubtFunction prevDoubtFunction = prevDoubtFunctions[^1];
+        Guard.IsNotNull(nextDoubtFunction);
 
-        double d0 = prevDoubtFunction(prevIndex);
-        double d1 = currentDoubtFunction(currentIndex);
+        double d0 = currentDoubtFunction(currentIndex);
+        double d1 = nextDoubtFunction(nextIndex);
 
-        
+        return Math.Sqrt(d0*d0 + d1*d1);
     }
 }
