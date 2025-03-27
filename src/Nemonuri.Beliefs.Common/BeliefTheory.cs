@@ -46,7 +46,7 @@ public static class BeliefTheory
 
     public static DoubtFunction CreateDoubtFunction
     (
-        this DoubtFunctional doubtFunctional,
+        this DoubtFunctionalUnion doubtFunctionalUnion,
         DoubtFunctionInvokeInfo[] prevDoubtFunctionInfos,
         DoubtFunctionInvokeInfo currentDoubtFunctionInfo,
         DoubtFunctionUnion nextDoubtFunctionUnion,
@@ -55,31 +55,28 @@ public static class BeliefTheory
     ) =>
         CreateDoubtFunction
         (
-            doubtFunctional,
+            doubtFunctionalUnion,
             [..prevDoubtFunctionInfos.Select(a => a.DoubtFunction)],
             [..prevDoubtFunctionInfos.Select(a => a.Index)],
             currentDoubtFunctionInfo.DoubtFunction,
             currentDoubtFunctionInfo.Index,
-            nextDoubtFunctionUnion.Dimension1,
-            nextDoubtFunctionUnion.Dimension2,
+            nextDoubtFunctionUnion,
             nextDoubtFunctionCardinality,
             out innerDoubts
         );
 
     public static DoubtFunction CreateDoubtFunction
     (
-        this DoubtFunctional doubtFunctional,
+        this DoubtFunctionalUnion doubtFunctionalUnion,
         DoubtFunction[] prevDoubtFunctions,
         uint[] prevIndexes,
         DoubtFunction currentDoubtFunction,
         uint currentIndex,
-        DoubtFunction? nextDoubtFunction,
-        Doubt2DFunction? nextDoubt2DFunction,
+        DoubtFunctionUnion nextDoubtFunctionUnion,
         uint nextDoubtFunctionCardinality,
         out double[] innerDoubts
     )
     {
-        Guard.IsNotNull(doubtFunctional);
         Guard.IsNotNull(prevIndexes);
         Guard.IsNotNull(prevDoubtFunctions);
         Guard.IsEqualTo(prevIndexes.Length, prevDoubtFunctions.Length);
@@ -88,16 +85,59 @@ public static class BeliefTheory
 
         for (uint nextIndex = 0; nextIndex < nextDoubtFunctionCardinality; nextIndex++)
         {
-            innerDoubts[nextIndex] = doubtFunctional.Invoke
+            double d = 0;
+            if 
             (
-                prevDoubtFunctions,
-                prevIndexes, 
-                currentDoubtFunction,
-                currentIndex, 
-                nextDoubtFunction,
-                nextDoubt2DFunction,
-                nextIndex
-            );
+                doubtFunctionalUnion.Kind == DoubtFunctionKind.None &&
+                doubtFunctionalUnion.Dimension0 is {} doubtFunctional0
+            )
+            {
+                d = doubtFunctional0.Invoke
+                (
+                    prevDoubtFunctions,
+                    prevIndexes, 
+                    currentDoubtFunction,
+                    currentIndex,
+                    nextIndex
+                );
+            }
+            else if 
+            (
+                doubtFunctionalUnion.Kind == DoubtFunctionKind.Dimension1 &&
+                doubtFunctionalUnion.Dimension1 is {} doubtFunctional1 &&
+                nextDoubtFunctionUnion.Kind == DoubtFunctionKind.Dimension1 &&
+                nextDoubtFunctionUnion.Dimension1 is {} doubtFunction1
+            )
+            {
+                d = doubtFunctional1.Invoke
+                (
+                    prevDoubtFunctions,
+                    prevIndexes, 
+                    currentDoubtFunction,
+                    currentIndex,
+                    doubtFunction1,
+                    nextIndex
+                );
+            }
+            else if 
+            (
+                doubtFunctionalUnion.Kind == DoubtFunctionKind.Dimension2 &&
+                doubtFunctionalUnion.Dimension2 is {} doubtFunctional2 &&
+                nextDoubtFunctionUnion.Kind == DoubtFunctionKind.Dimension2 &&
+                nextDoubtFunctionUnion.Dimension2 is {} doubtFunction2
+            )
+            {
+                d = doubtFunctional2.Invoke
+                (
+                    prevDoubtFunctions,
+                    prevIndexes, 
+                    currentDoubtFunction,
+                    currentIndex,
+                    doubtFunction2,
+                    nextIndex
+                );
+            }
+            innerDoubts[nextIndex] = d;
         }
 
         Guard.IsGreaterThanOrEqualTo(innerDoubts.Min(), 0);
@@ -113,7 +153,7 @@ public static class BeliefTheory
 
     public static DoubtFunction[] CreateDoubtFunctions
     (
-        this DoubtFunctional doubtFunctional,
+        this DoubtFunctionalUnion doubtFunctionalUnion,
         DoubtFunctionInvokeInfo[] prevDoubtFunctionInfos,
         DoubtFunction currentDoubtFunction,
         uint currentDoubtFunctionCardinality,
@@ -123,26 +163,24 @@ public static class BeliefTheory
     ) =>
         CreateDoubtFunctions
         (
-            doubtFunctional,
+            doubtFunctionalUnion,
             [..prevDoubtFunctionInfos.Select(a => a.DoubtFunction)],
             [..prevDoubtFunctionInfos.Select(a => a.Index)],
             currentDoubtFunction,
             currentDoubtFunctionCardinality,
-            nextDoubtFunctionUnion.Dimension1,
-            nextDoubtFunctionUnion.Dimension2,
+            nextDoubtFunctionUnion,
             nextDoubtFunctionCardinality,
             out innerDoubtArrays
         );
 
     public static DoubtFunction[] CreateDoubtFunctions
     (
-        this DoubtFunctional doubtFunctional,
+        this DoubtFunctionalUnion doubtFunctionalUnion,
         DoubtFunction[] prevDoubtFunctions,
         uint[] prevIndexes,
         DoubtFunction currentDoubtFunction,
         uint currentDoubtFunctionCardinality,
-        DoubtFunction? nextDoubtFunction,
-        Doubt2DFunction? nextDoubt2DFunction,
+        DoubtFunctionUnion nextDoubtFunctionUnion,
         uint nextDoubtFunctionCardinality,
         out double[][] innerDoubtArrays
     )
@@ -154,13 +192,12 @@ public static class BeliefTheory
         {
             resultDoubtFunctions[currentIndex] = CreateDoubtFunction
             (
-                doubtFunctional,
+                doubtFunctionalUnion,
                 prevDoubtFunctions,
                 prevIndexes,
                 currentDoubtFunction,
                 currentIndex,
-                nextDoubtFunction,
-                nextDoubt2DFunction,
+                nextDoubtFunctionUnion,
                 nextDoubtFunctionCardinality,
                 out double[] innerDoubts
             );
