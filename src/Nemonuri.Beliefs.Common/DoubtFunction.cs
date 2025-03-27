@@ -4,9 +4,10 @@ public delegate double DoubtFunction(uint index);
 
 public delegate double DoubtFunctional
 (
-    uint[] prevIndexes, // n
     DoubtFunction[] prevDoubtFunctions, // n
-    uint currentIndex,
+    uint[] prevIndexes, // n
     DoubtFunction currentDoubtFunction,
-    uint index
+    uint currentIndex,
+    DoubtFunction? nextDoubtFunction,
+    uint nextIndex
 );

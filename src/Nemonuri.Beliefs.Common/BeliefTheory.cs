@@ -29,7 +29,7 @@ public static class BeliefTheory
         DoubtFunction[] prevDoubtFunctions,
         uint currentIndex,
         DoubtFunction currentDoubtFunction,
-        uint cardinality,
+        uint nextDoubtFunctionCardinality,
         out double[] innerDoubts
     )
     {
@@ -38,11 +38,12 @@ public static class BeliefTheory
         Guard.IsNotNull(prevDoubtFunctions);
         Guard.IsEqualTo(prevIndexes.Length, prevDoubtFunctions.Length);
 
-        innerDoubts = new double[cardinality];
+        innerDoubts = new double[nextDoubtFunctionCardinality];
+        Guard.IsGreaterThanOrEqualTo(innerDoubts.Min(), 0);
 
-        for (uint i = 0; i < cardinality; i++)
+        for (uint nextIndex = 0; nextIndex < nextDoubtFunctionCardinality; nextIndex++)
         {
-            innerDoubts[i] = doubtFunctional.Invoke(prevIndexes, prevDoubtFunctions, currentIndex, currentDoubtFunction, i);
+            innerDoubts[nextIndex] = doubtFunctional.Invoke(prevIndexes, prevDoubtFunctions, currentIndex, currentDoubtFunction, nextIndex);
         }
 
         double[] localInnerDoubts = innerDoubts;
@@ -59,29 +60,28 @@ public static class BeliefTheory
         this DoubtFunctional doubtFunctional,
         uint[] prevIndexes,
         DoubtFunction[] prevDoubtFunctions,
-        uint currentIndex,
         DoubtFunction currentDoubtFunction,
-        uint doubtFunctionCardinality,
-        uint doubtFunctionalCardinality,
+        uint currentDoubtFunctionCardinality,
+        uint nextDoubtFunctionCardinality,
         out double[][] innerDoubtArrays
     )
     {
-        innerDoubtArrays = new double[doubtFunctionCardinality][];
-        DoubtFunction[] resultDoubtFunctions = new DoubtFunction[doubtFunctionalCardinality];
+        innerDoubtArrays = new double[currentDoubtFunctionCardinality][];
+        DoubtFunction[] resultDoubtFunctions = new DoubtFunction[currentDoubtFunctionCardinality];
 
-        for (uint i = 0; i < doubtFunctionalCardinality; i++)
+        for (uint currentIndex = 0; currentIndex < currentDoubtFunctionCardinality; currentIndex++)
         {
-            resultDoubtFunctions[i] = CreateDoubtFunction
+            resultDoubtFunctions[currentIndex] = CreateDoubtFunction
             (
                 doubtFunctional,
                 prevIndexes,
                 prevDoubtFunctions,
                 currentIndex,
                 currentDoubtFunction,
-                doubtFunctionCardinality,
+                nextDoubtFunctionCardinality,
                 out double[] innerDoubts
             );
-            innerDoubtArrays[i] = innerDoubts;
+            innerDoubtArrays[currentIndex] = innerDoubts;
         }
 
         return resultDoubtFunctions;
