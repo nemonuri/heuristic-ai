@@ -47,6 +47,28 @@ public static class BeliefTheory
     public static DoubtFunction CreateDoubtFunction
     (
         this DoubtFunctional doubtFunctional,
+        DoubtFunctionInvokeInfo[] prevDoubtFunctionInfos,
+        DoubtFunctionInvokeInfo currentDoubtFunctionInfo,
+        DoubtFunctionUnion nextDoubtFunctionUnion,
+        uint nextDoubtFunctionCardinality,
+        out double[] innerDoubts
+    ) =>
+        CreateDoubtFunction
+        (
+            doubtFunctional,
+            [..prevDoubtFunctionInfos.Select(a => a.DoubtFunction)],
+            [..prevDoubtFunctionInfos.Select(a => a.Index)],
+            currentDoubtFunctionInfo.DoubtFunction,
+            currentDoubtFunctionInfo.Index,
+            nextDoubtFunctionUnion.Dimension1,
+            nextDoubtFunctionUnion.Dimension2,
+            nextDoubtFunctionCardinality,
+            out innerDoubts
+        );
+
+    public static DoubtFunction CreateDoubtFunction
+    (
+        this DoubtFunctional doubtFunctional,
         DoubtFunction[] prevDoubtFunctions,
         uint[] prevIndexes,
         DoubtFunction currentDoubtFunction,
@@ -92,6 +114,29 @@ public static class BeliefTheory
     public static DoubtFunction[] CreateDoubtFunctions
     (
         this DoubtFunctional doubtFunctional,
+        DoubtFunctionInvokeInfo[] prevDoubtFunctionInfos,
+        DoubtFunction currentDoubtFunction,
+        uint currentDoubtFunctionCardinality,
+        DoubtFunctionUnion nextDoubtFunctionUnion,
+        uint nextDoubtFunctionCardinality,
+        out double[][] innerDoubtArrays
+    ) =>
+        CreateDoubtFunctions
+        (
+            doubtFunctional,
+            [..prevDoubtFunctionInfos.Select(a => a.DoubtFunction)],
+            [..prevDoubtFunctionInfos.Select(a => a.Index)],
+            currentDoubtFunction,
+            currentDoubtFunctionCardinality,
+            nextDoubtFunctionUnion.Dimension1,
+            nextDoubtFunctionUnion.Dimension2,
+            nextDoubtFunctionCardinality,
+            out innerDoubtArrays
+        );
+
+    public static DoubtFunction[] CreateDoubtFunctions
+    (
+        this DoubtFunctional doubtFunctional,
         DoubtFunction[] prevDoubtFunctions,
         uint[] prevIndexes,
         DoubtFunction currentDoubtFunction,
@@ -123,5 +168,23 @@ public static class BeliefTheory
         }
 
         return resultDoubtFunctions;
+    }
+
+    public static double[,] To2DArray
+    (
+        this double[][] innerDoubtArrays
+    )
+    {
+        int yMax = innerDoubtArrays.Select(a => a.Length).Max();
+        double[,] result = new double[innerDoubtArrays.Length, yMax];
+        for (int x = 0; x < innerDoubtArrays.Length; x++)
+        {
+            for (int y = 0; y < yMax; y++)
+            {
+                result[x, y] = innerDoubtArrays[x][y];
+            }
+        }
+
+        return result;
     }
 }
